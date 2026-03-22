@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DevBhoomi Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0d1117;--s1:#161b22;--s2:#1e2430;--s3:#252d3a;
+  --brd:#2a3040;--brd2:#3a4555;
+  --green:#3fb950;--green2:#2ea043;
+  --blue:#58a6ff;--blue2:#1f6feb;
+  --orange:#f78166;--yellow:#e3b341;--purple:#bc8cff;--red:#f85149;
+  --text:#e6edf3;--muted:#8b949e;--dim:#6e7681;
+  --r:8px;--r2:12px;--tr:all .22s ease;--font:'Inter',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:14px;scroll-behavior:smooth;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex;min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:4px;}
+a{color:inherit;text-decoration:none;}
+/* SIDEBAR */
+.sidebar{width:220px;min-height:100vh;background:var(--s1);border-right:1px solid var(--brd);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:200;}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid var(--brd);display:flex;align-items:center;gap:10px;}
+.sb-icon{width:32px;height:32px;background:linear-gradient(135deg,#2ea043,#1f6feb);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;}
+.sb-name{font-size:.9rem;font-weight:700;}.sb-name span{color:var(--green);}
+.sb-sub{font-size:.6rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;}
+.sb-sec{font-size:.6rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);padding:14px 16px 5px;}
+.sb-item{display:flex;align-items:center;gap:9px;padding:8px 16px;cursor:pointer;font-size:.82rem;color:var(--muted);transition:var(--tr);border-left:2px solid transparent;}
+.sb-item:hover{background:var(--s2);color:var(--text);}
+.sb-item.active{background:rgba(31,111,235,.1);color:var(--blue);border-left-color:var(--blue);}
+.sb-item .ico{width:16px;text-align:center;font-size:.85rem;flex-shrink:0;}
+.sb-bdg{margin-left:auto;background:var(--orange);color:#fff;font-size:.58rem;font-weight:700;padding:2px 6px;border-radius:10px;min-width:18px;text-align:center;display:none;}
+.sb-bdg.show{display:block;}
+.sb-bdg.grn{background:var(--green2);}
+.sb-footer{margin-top:auto;padding:12px 16px;border-top:1px solid var(--brd);}
+.sb-server{display:flex;align-items:center;gap:6px;font-size:.68rem;color:var(--muted);margin-bottom:10px;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse 2s infinite;}
+.dot.red{background:var(--red);animation:none;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.sb-user{display:flex;align-items:center;gap:9px;margin-bottom:10px;}
+.sb-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#2ea043,#58a6ff);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;}
+.sb-uname{font-size:.8rem;font-weight:600;}.sb-urole{font-size:.65rem;color:var(--muted);}
+.btn-logout{width:100%;padding:6px;background:rgba(248,81,73,.1);border:1px solid rgba(248,81,73,.25);color:var(--red);border-radius:var(--r);cursor:pointer;font-size:.75rem;font-weight:600;font-family:var(--font);transition:var(--tr);}
+.btn-logout:hover{background:rgba(248,81,73,.2);}
+/* MAIN */
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{height:52px;background:var(--s1);border-bottom:1px solid var(--brd);display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:100;}
+.topbar-title{font-size:.95rem;font-weight:600;flex:1;}
+.topbar-time{font-size:.72rem;color:var(--muted);}
+.topbar-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;padding:4px 8px;border-radius:6px;transition:var(--tr);}
+.topbar-btn:hover{background:var(--s2);color:var(--text);}
+.topbar-btn.spin{animation:spin .5s linear;}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+/* LOGIN */
+#loginScreen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;}
+.lc{background:var(--s1);border:1px solid var(--brd);border-radius:16px;padding:2.5rem;width:360px;text-align:center;}
+.lc-logo{font-size:2.2rem;margin-bottom:.5rem;}
+.lc-title{font-size:1.3rem;font-weight:700;margin-bottom:.3rem;}
+.lc-sub{font-size:.8rem;color:var(--muted);margin-bottom:2rem;}
+.lf{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem;text-align:left;}
+.lf label{font-size:.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
+.lf input{padding:.65rem .9rem;background:var(--s2);border:1px solid var(--brd);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:.85rem;outline:none;transition:var(--tr);}
+.lf input:focus{border-color:var(--blue2);}
+.btn-login{width:100%;padding:.75rem;background:var(--blue2);color:#fff;border:none;border-radius:var(--r);cursor:pointer;font-family:var(--font);font-size:.88rem;font-weight:600;transition:var(--tr);margin-top:.5rem;}
+.btn-login:hover{background:#388bfd;}
+.lc-hint{font-size:.7rem;color:var(--dim);margin-top:1rem;}
+.lc-hint span{color:var(--yellow);}
+.lerr{background:rgba(248,81,73,.1);border:1px solid rgba(248,81,73,.3);color:var(--red);padding:.6rem 1rem;border-radius:var(--r);font-size:.78rem;margin-bottom:.8rem;display:none;}
+.lerr.show{display:block;}
+/* CONTENT */
+.content{padding:20px;flex:1;}
+.page{display:none;animation:fdin .25s ease;}
+.page.active{display:block;}
+@keyframes fdin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.sc{background:var(--s1);border:1px solid var(--brd);border-radius:var(--r2);padding:18px;position:relative;overflow:hidden;transition:var(--tr);}
+.sc:hover{border-color:var(--brd2);transform:translateY(-2px);}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.sc.blue::before{background:var(--blue);}
+.sc.grn::before{background:var(--green);}
+.sc.ylw::before{background:var(--yellow);}
+.sc.prp::before{background:var(--purple);}
+.sc.org::before{background:var(--orange);}
+.sc-ico{font-size:1.4rem;margin-bottom:.6rem;}
+.sc-lbl{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem;}
+.sc-val{font-size:1.7rem;font-weight:700;line-height:1;}
+.sc-sub{font-size:.68rem;color:var(--dim);margin-top:.3rem;}
+/* TABLE */
+.tc{background:var(--s1);border:1px solid var(--brd);border-radius:var(--r2);overflow:hidden;margin-bottom:20px;}
+.tc-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--brd);flex-wrap:wrap;gap:8px;}
+.tc-title{font-size:.9rem;font-weight:600;}
+.tc-count{font-size:.72rem;color:var(--muted);}
+.tc-act{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+table{width:100%;border-collapse:collapse;}
+th{padding:10px 14px;text-align:left;font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--brd);white-space:nowrap;background:var(--s2);}
+td{padding:10px 14px;font-size:.8rem;border-bottom:1px solid var(--brd);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+.mono{font-family:'Courier New',monospace;font-size:.75rem;color:var(--blue);}
+.muted{color:var(--muted);}
+.trunc{max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wrap{max-width:200px;word-break:break-word;line-height:1.4;}
+.av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#2ea043,#1f6feb);display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;}
+.av.o{background:linear-gradient(135deg,#e3b341,#f78166);}
+.av.p{background:linear-gradient(135deg,#bc8cff,#f78166);}
+.stars{color:var(--yellow);letter-spacing:-1px;}
+/* BADGES */
+.bdg{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:.68rem;font-weight:600;white-space:nowrap;}
+.bdg-g{background:rgba(63,185,80,.12);color:var(--green);border:1px solid rgba(63,185,80,.2);}
+.bdg-b{background:rgba(88,166,255,.12);color:var(--blue);border:1px solid rgba(88,166,255,.2);}
+.bdg-o{background:rgba(247,129,102,.12);color:var(--orange);border:1px solid rgba(247,129,102,.2);}
+.bdg-y{background:rgba(227,179,65,.12);color:var(--yellow);border:1px solid rgba(227,179,65,.2);}
+.bdg-p{background:rgba(188,140,255,.12);color:var(--purple);border:1px solid rgba(188,140,255,.2);}
+.bdg-r{background:rgba(248,81,73,.12);color:var(--red);border:1px solid rgba(248,81,73,.2);}
+.bdg-gray{background:rgba(139,148,158,.12);color:var(--muted);border:1px solid rgba(139,148,158,.2);}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:var(--r);cursor:pointer;font-size:.78rem;font-weight:600;font-family:var(--font);border:1px solid var(--brd);background:var(--s2);color:var(--text);transition:var(--tr);}
+.btn:hover{background:var(--s3);border-color:var(--brd2);}
+.btn-sm{padding:4px 10px;font-size:.72rem;}
+.btn-p{background:var(--blue2);border-color:var(--blue2);color:#fff;}
+.btn-p:hover{background:#388bfd;border-color:#388bfd;}
+.btn-g{background:var(--green2);border-color:var(--green2);color:#fff;}
+.btn-g:hover{background:var(--green);border-color:var(--green);}
+.btn-r{background:rgba(248,81,73,.1);border-color:rgba(248,81,73,.3);color:var(--red);}
+.btn-r:hover{background:rgba(248,81,73,.2);}
+.btn-y{background:rgba(227,179,65,.1);border-color:rgba(227,179,65,.3);color:var(--yellow);}
+.btn-y:hover{background:rgba(227,179,65,.2);}
+.btn-prl{background:rgba(188,140,255,.1);border-color:rgba(188,140,255,.3);color:var(--purple);}
+.btn-prl:hover{background:rgba(188,140,255,.2);}
+/* FILTER */
+.fb{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:12px 18px;border-bottom:1px solid var(--brd);background:var(--s2);}
+.fbtn{padding:4px 12px;border-radius:20px;border:1px solid var(--brd);background:transparent;color:var(--muted);font-size:.72rem;font-weight:600;cursor:pointer;font-family:var(--font);transition:var(--tr);}
+.fbtn:hover{border-color:var(--brd2);color:var(--text);}
+.fbtn.active{background:var(--blue2);border-color:var(--blue2);color:#fff;}
+.sinput{padding:5px 12px;background:var(--s3);border:1px solid var(--brd);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:.78rem;outline:none;width:200px;transition:var(--tr);}
+.sinput:focus{border-color:var(--blue2);}
+.sinput::placeholder{color:var(--dim);}
+/* EMPTY */
+.empty{padding:3rem;text-align:center;color:var(--muted);}
+.empty-ico{font-size:2.2rem;margin-bottom:.7rem;opacity:.4;}
+.empty p{font-size:.8rem;}
+/* MODAL */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(3px);}
+.mov.open{display:flex;}
+.modal{background:var(--s1);border:1px solid var(--brd);border-radius:16px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+.mh{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--brd);}
+.mh-title{font-size:.95rem;font-weight:700;}
+.mh-close{background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;padding:2px 6px;transition:var(--tr);}
+.mh-close:hover{color:var(--text);}
+.mb{padding:20px;}
+.dr{display:flex;gap:8px;margin-bottom:10px;align-items:flex-start;}
+.dl{font-size:.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em;min-width:110px;padding-top:1px;flex-shrink:0;}
+.dv{font-size:.82rem;color:var(--text);flex:1;line-height:1.5;}
+.mf2{padding:12px 20px;border-top:1px solid var(--brd);display:flex;gap:8px;flex-wrap:wrap;}
+.mf{display:flex;flex-direction:column;gap:.3rem;margin-bottom:.8rem;}
+.mf label{font-size:.68rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
+.mf input,.mf select,.mf textarea{padding:.6rem .8rem;background:var(--s2);border:1px solid var(--brd);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:.82rem;outline:none;transition:var(--tr);}
+.mf input:focus,.mf select:focus,.mf textarea:focus{border-color:var(--blue2);}
+.mf textarea{resize:vertical;min-height:80px;}
+/* MINI CHART */
+.mini-bar{height:4px;border-radius:4px;background:var(--s3);overflow:hidden;margin-top:4px;}
+.mini-fill{height:100%;border-radius:4px;transition:width 1s ease;}
+/* SETTINGS */
+.ss{background:var(--s1);border:1px solid var(--brd);border-radius:var(--r2);padding:20px;margin-bottom:16px;}
+.ss-title{font-size:.85rem;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--brd);}
+.sr{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--brd);gap:1rem;}
+.sr:last-child{border-bottom:none;}
+.si{flex:1;}.si-lbl{font-size:.82rem;font-weight:500;}.si-desc{font-size:.7rem;color:var(--muted);margin-top:2px;}
+.sinp{padding:5px 10px;background:var(--s2);border:1px solid var(--brd);border-radius:var(--r);color:var(--text);font-family:var(--font);font-size:.78rem;outline:none;width:200px;}
+.sinp:focus{border-color:var(--blue2);}
+.tgl{width:36px;height:20px;background:var(--brd2);border-radius:10px;cursor:pointer;position:relative;transition:var(--tr);border:none;flex-shrink:0;}
+.tgl.on{background:var(--green2);}
+.tgl::after{content:'';position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;top:3px;left:3px;transition:var(--tr);}
+.tgl.on::after{left:19px;}
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--s1);border:1px solid var(--brd);border-radius:10px;padding:.75rem 1.2rem;font-size:.82rem;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,.4);z-index:9999;transform:translateY(20px);opacity:0;transition:all .3s;pointer-events:none;max-width:320px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.s{border-left:3px solid var(--green);}
+.toast.e{border-left:3px solid var(--red);}
+.toast.i{border-left:3px solid var(--blue);}
+/* DASH GRID */
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.dc{background:var(--s1);border:1px solid var(--brd);border-radius:var(--r2);padding:18px;}
+.dc-title{font-size:.8rem;font-weight:600;margin-bottom:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+@media(max-width:900px){.sidebar{width:0;overflow:hidden;}.main{margin-left:0;}.stats-grid{grid-template-columns:repeat(2,1fr);}.dg{grid-template-columns:1fr;}}
+@media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+<div class="lc">
+  <div class="lc-logo">&#127956;</div>
+  <div class="lc-title">DevBhoomi Admin</div>
+  <div class="lc-sub">Sign in to access the dashboard</div>
+  <div class="lerr" id="lerr"></div>
+  <div class="lf"><label>Username</label><input type="text" id="lU" value="admin"/></div>
+  <div class="lf"><label>Password</label><input type="password" id="lP" value="admin123"/></div>
+  <button class="btn-login" onclick="doLogin()">Sign In &#8594;</button>
+  <div class="lc-hint">Default: <span>admin</span> / <span>admin123</span></div>
+</div>
+</div>
+
+<div class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-icon">&#127956;</div>
+    <div><div class="sb-name">Dev<span>Bhoomi</span></div><div class="sb-sub">Admin Panel v2</div></div>
+  </div>
+  <div class="sb-sec">Main</div>
+  <div class="sb-item active" onclick="go('dashboard',this)" id="n-dashboard"><span class="ico">&#128202;</span>Dashboard</div>
+  <div class="sb-sec">Data</div>
+  <div class="sb-item" onclick="go('bookings',this)" id="n-bookings"><span class="ico">&#128197;</span>Bookings<span class="sb-bdg" id="b-bk">0</span></div>
+  <div class="sb-item" onclick="go('contacts',this)" id="n-contacts"><span class="ico">&#128233;</span>Contacts<span class="sb-bdg" id="b-ct">0</span></div>
+  <div class="sb-item" onclick="go('reviews',this)" id="n-reviews"><span class="ico">&#11088;</span>Reviews<span class="sb-bdg grn" id="b-rv">0</span></div>
+  <div class="sb-item" onclick="go('users',this)" id="n-users"><span class="ico">&#128101;</span>Users</div>
+  <div class="sb-item" onclick="go('newsletter',this)" id="n-newsletter"><span class="ico">&#128231;</span>Newsletter</div>
+  <div class="sb-sec">Content</div>
+  <div class="sb-item" onclick="go('packages',this)" id="n-packages"><span class="ico">&#128230;</span>Packages</div>
+  <div class="sb-item" onclick="go('destinations',this)" id="n-destinations"><span class="ico">&#128205;</span>Destinations</div>
+  <div class="sb-sec">System</div>
+  <div class="sb-item" onclick="go('settings',this)" id="n-settings"><span class="ico">&#9881;</span>Settings</div>
+  <div class="sb-item" onclick="window.open('index.html','_blank')"><span class="ico">&#127758;</span>View Website</div>
+  <div class="sb-footer">
+    <div class="sb-server"><div class="dot" id="sDot"></div><span id="sStatus">Connecting...</span></div>
+    <div class="sb-user"><div class="sb-av" id="aAv">A</div><div><div class="sb-uname" id="aNm">Admin</div><div class="sb-urole">Administrator</div></div></div>
+    <button class="btn-logout" onclick="doLogout()">&#x1F6AA; Sign Out</button>
+  </div>
+</div>
+
+<div class="main" id="mainArea" style="display:none">
+  <div class="topbar">
+    <div class="topbar-title" id="pgTitle">Dashboard</div>
+    <div class="topbar-time" id="clk"></div>
+    <button class="topbar-btn" id="rfBtn" onclick="refreshAll()" title="Refresh">&#8635;</button>
+  </div>
+  <div class="content">
+
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="sc blue"><div class="sc-ico">&#128197;</div><div class="sc-lbl">Total Bookings</div><div class="sc-val" id="sv-bk">-</div><div class="sc-sub" id="sv-bk2">Loading...</div></div>
+        <div class="sc grn"><div class="sc-ico">&#128233;</div><div class="sc-lbl">Enquiries</div><div class="sc-val" id="sv-ct">-</div><div class="sc-sub" id="sv-ct2">Loading...</div></div>
+        <div class="sc ylw"><div class="sc-ico">&#11088;</div><div class="sc-lbl">Reviews</div><div class="sc-val" id="sv-rv">-</div><div class="sc-sub" id="sv-rv2">Loading...</div></div>
+        <div class="sc prp"><div class="sc-ico">&#128101;</div><div class="sc-lbl">Users</div><div class="sc-val" id="sv-us">-</div><div class="sc-sub" id="sv-us2">Loading...</div></div>
+      </div>
+      <div class="dg">
+        <div class="tc">
+          <div class="tc-head"><div class="tc-title">&#128197; Recent Bookings</div><button class="btn btn-sm" onclick="go('bookings',document.getElementById('n-bookings'))">View All</button></div>
+          <div style="overflow-x:auto"><table><thead><tr><th>ID</th><th>Customer</th><th>Package</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead><tbody id="d-bk"></tbody></table></div>
+        </div>
+        <div class="tc">
+          <div class="tc-head"><div class="tc-title">&#128233; Recent Contacts</div><button class="btn btn-sm" onclick="go('contacts',document.getElementById('n-contacts'))">View All</button></div>
+          <div style="overflow-x:auto"><table><thead><tr><th>Ticket</th><th>Name</th><th>Package</th><th>Status</th></tr></thead><tbody id="d-ct"></tbody></table></div>
+        </div>
+      </div>
+      <div class="dg">
+        <div class="dc"><div class="dc-title">&#128202; Booking Status Distribution</div><div id="bkChart"></div></div>
+        <div class="dc"><div class="dc-title">&#11088; Review Distribution</div><div id="rvChart"></div></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-bookings">
+      <div class="tc">
+        <div class="tc-head">
+          <div><div class="tc-title">&#128197; All Bookings</div><div class="tc-count" id="bkCount">-</div></div>
+          <div class="tc-act"><input class="sinput" id="bkSearch" placeholder="Search name/phone/ID..." oninput="rBk()"/><button class="btn btn-sm" onclick="expCSV('bookings')">&#11015; CSV</button><button class="btn btn-sm btn-p" onclick="refreshAll()">&#8635;</button></div>
+        </div>
+        <div class="fb">
+          <button class="fbtn active" onclick="sf(this,'bookings','all')">All</button>
+          <button class="fbtn" onclick="sf(this,'bookings','Query Received')">Query Received</button>
+          <button class="fbtn" onclick="sf(this,'bookings','Confirmed')">Confirmed</button>
+          <button class="fbtn" onclick="sf(this,'bookings','In Progress')">In Progress</button>
+          <button class="fbtn" onclick="sf(this,'bookings','Completed')">Completed</button>
+          <button class="fbtn" onclick="sf(this,'bookings','Cancelled')">Cancelled</button>
+        </div>
+        <div style="overflow-x:auto"><table><thead><tr><th>Booking ID</th><th>Customer</th><th>Phone</th><th>Package</th><th>Travel Date</th><th>Pax</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead><tbody id="bkBody"></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-contacts">
+      <div class="tc">
+        <div class="tc-head">
+          <div><div class="tc-title">&#128233; All Enquiries</div><div class="tc-count" id="ctCount">-</div></div>
+          <div class="tc-act"><input class="sinput" id="ctSearch" placeholder="Search name/email/ticket..." oninput="rCt()"/><button class="btn btn-sm" onclick="expCSV('contacts')">&#11015; CSV</button><button class="btn btn-sm btn-p" onclick="refreshAll()">&#8635;</button></div>
+        </div>
+        <div class="fb">
+          <button class="fbtn active" onclick="sf(this,'contacts','all')">All</button>
+          <button class="fbtn" onclick="sf(this,'contacts','New')">New</button>
+          <button class="fbtn" onclick="sf(this,'contacts','In Progress')">In Progress</button>
+          <button class="fbtn" onclick="sf(this,'contacts','Replied')">Replied</button>
+          <button class="fbtn" onclick="sf(this,'contacts','Resolved')">Resolved</button>
+        </div>
+        <div style="overflow-x:auto"><table><thead><tr><th>Ticket</th><th>Customer</th><th>Email</th><th>Phone</th><th>Package</th><th>Message</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody id="ctBody"></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-reviews">
+      <div class="tc">
+        <div class="tc-head">
+          <div><div class="tc-title">&#11088; Customer Reviews</div><div class="tc-count" id="rvCount">-</div></div>
+          <div class="tc-act"><button class="btn btn-sm btn-g" onclick="approveAll()">&#10003; Approve All Pending</button><button class="btn btn-sm btn-p" onclick="refreshAll()">&#8635;</button></div>
+        </div>
+        <div class="fb">
+          <button class="fbtn active" onclick="srf(this,'all')">All</button>
+          <button class="fbtn" onclick="srf(this,'pending')">&#9203; Pending</button>
+          <button class="fbtn" onclick="srf(this,'approved')">&#9989; Approved</button>
+          <button class="fbtn" onclick="srf(this,'5')">5&#9733;</button>
+          <button class="fbtn" onclick="srf(this,'4')">4&#9733;</button>
+          <button class="fbtn" onclick="srf(this,'low')">3&#9733; &amp; Below</button>
+        </div>
+        <div style="overflow-x:auto"><table><thead><tr><th>Reviewer</th><th>Package</th><th>Rating</th><th>Review</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody id="rvBody"></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-users">
+      <div class="tc">
+        <div class="tc-head">
+          <div><div class="tc-title">&#128101; Registered Users</div><div class="tc-count" id="usCount">-</div></div>
+          <div class="tc-act"><input class="sinput" id="usSearch" placeholder="Search name/email..." oninput="rUs()"/><button class="btn btn-sm" onclick="expCSV('users')">&#11015; CSV</button><button class="btn btn-sm btn-p" onclick="refreshAll()">&#8635;</button></div>
+        </div>
+        <div style="overflow-x:auto"><table><thead><tr><th>User</th><th>Email</th><th>Phone</th><th>Role</th><th>Last Login</th><th>Joined</th><th>Status</th><th>Actions</th></tr></thead><tbody id="usBody"></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-newsletter">
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="sc grn"><div class="sc-ico">&#128231;</div><div class="sc-lbl">Total Subscribers</div><div class="sc-val" id="nl-t">-</div></div>
+        <div class="sc blue"><div class="sc-ico">&#10003;</div><div class="sc-lbl">Active</div><div class="sc-val" id="nl-a">-</div></div>
+        <div class="sc org"><div class="sc-ico">&#128277;</div><div class="sc-lbl">Unsubscribed</div><div class="sc-val" id="nl-u">-</div></div>
+      </div>
+      <div class="tc">
+        <div class="tc-head"><div class="tc-title">&#128231; Newsletter Subscribers</div><div class="tc-act"><button class="btn btn-sm" onclick="expCSV('newsletter')">&#11015; CSV</button><button class="btn btn-sm btn-p" onclick="refreshAll()">&#8635;</button></div></div>
+        <div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Email</th><th>Source</th><th>Subscribed</th><th>Status</th></tr></thead><tbody id="nlBody"></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-packages">
+      <div class="tc">
+        <div class="tc-head"><div class="tc-title">&#128230; Tour Packages</div><div class="tc-count" id="pkCount">-</div></div>
+        <div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Key</th><th>Package Name</th><th>Category</th><th>Price</th><th>Nights</th><th>Rating</th><th>Reviews</th><th>Region</th></tr></thead><tbody id="pkBody"></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-destinations">
+      <div class="tc">
+        <div class="tc-head"><div class="tc-title">&#128205; Destinations</div></div>
+        <div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Destination</th><th>Region</th><th>Category</th><th>Altitude</th><th>Best Time</th><th>Rating</th></tr></thead><tbody id="dsBody"></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-settings">
+      <div class="ss">
+        <div class="ss-title">&#127758; Server Connection</div>
+        <div class="sr"><div class="si"><div class="si-lbl">API Base URL</div><div class="si-desc">Backend server address (default: localhost:5000)</div></div><input class="sinp" id="apiUrl" value="http://localhost:5000/api"/><button class="btn btn-sm btn-p" onclick="applyUrl()" style="margin-left:8px">Apply</button></div>
+        <div class="sr"><div class="si"><div class="si-lbl">Server Status</div><div class="si-desc" id="srvTxt">Click Test to check</div></div><button class="btn btn-sm" onclick="chkHealth()">Test Connection</button></div>
+        <div class="sr"><div class="si"><div class="si-lbl">Auto Refresh (30s)</div><div class="si-desc">Automatically reload data</div></div><button class="tgl on" id="arTgl" onclick="toggleAR(this)"></button></div>
+      </div>
+      <div class="ss">
+        <div class="ss-title">&#128274; Change Admin Password</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+          <div class="mf"><label>New Password</label><input type="password" id="nP" placeholder="Min 6 chars"/></div>
+          <div class="mf"><label>Confirm Password</label><input type="password" id="cP" placeholder="Repeat"/></div>
+        </div>
+        <button class="btn btn-p" onclick="chgPass()">Update Password</button>
+      </div>
+      <div class="ss">
+        <div class="ss-title">&#128190; Database Backup</div>
+        <div class="sr"><div class="si"><div class="si-lbl">Create Backup</div><div class="si-desc">Saves all database to a JSON file on server</div></div><button class="btn btn-sm btn-g" onclick="doBackup()">&#128190; Backup Now</button></div>
+        <div id="srvInfo" style="font-size:.75rem;color:var(--muted);margin-top:12px;line-height:1.8;background:var(--s2);padding:12px;border-radius:var(--r)">Server info will appear here after connection test.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="mov" id="bkModal"><div class="modal"><div class="mh"><div class="mh-title">&#128197; Booking Details</div><button class="mh-close" onclick="cm('bkModal')">&#x2715;</button></div><div class="mb" id="bkMb"></div><div class="mf2" id="bkMf"></div></div></div>
+<div class="mov" id="ctModal"><div class="modal"><div class="mh"><div class="mh-title">&#128233; Contact Details</div><button class="mh-close" onclick="cm('ctModal')">&#x2715;</button></div><div class="mb" id="ctMb"></div><div class="mf2" id="ctMf"></div></div></div>
+<div class="mov" id="rpModal"><div class="modal"><div class="mh"><div class="mh-title">&#9993; Reply to Customer</div><button class="mh-close" onclick="cm('rpModal')">&#x2715;</button></div><div class="mb"><div id="rpTo" style="font-size:.78rem;color:var(--muted);margin-bottom:12px"></div><div class="mf"><label>Reply Message</label><textarea id="rpMsg" rows="5" placeholder="Type your reply..."></textarea></div></div><div class="mf2"><button class="btn btn-p" onclick="sendReply()">&#9993; Send Reply</button><button class="btn" onclick="cm('rpModal')">Cancel</button></div></div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var API='http://localhost:5000/api';
+var CREDS={u:'admin',p:'admin123'};
+var arTimer=null;
+var rpTkt='';
+var FL={bk:'all',ct:'all',rv:'all'};
+var D={bk:[],ct:[],rv:[],us:[],nl:[]};
+
+function q(id){return document.getElementById(id);}
+function st(id,v){var e=q(id);if(e)e.textContent=v;}
+function fa(n){return '&#8377;'+(n||0).toLocaleString('en-IN');}
+function fd(iso){if(!iso)return'&#8212;';try{return new Date(iso).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}catch{return iso;}}
+function fds(iso){if(!iso)return'&#8212;';try{return new Date(iso).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}catch{return iso;}}
+function bsBdg(s){var m={'Query Received':'bdg-o','Confirmed':'bdg-b','In Progress':'bdg-y','Completed':'bdg-g','Cancelled':'bdg-r'};return'<span class="bdg '+(m[s]||'bdg-gray')+'">'+s+'</span>';}
+function cbBdg(s){var m={'New':'bdg-o','In Progress':'bdg-y','Replied':'bdg-b','Resolved':'bdg-g'};return'<span class="bdg '+(m[s]||'bdg-o')+'">'+(s||'New')+'</span>';}
+function rbBdg(r){var m={'admin':'bdg-p','moderator':'bdg-b','user':'bdg-gray'};return'<span class="bdg '+(m[r]||'bdg-gray')+'">'+(r||'user')+'</span>';}
+
+function toast(msg,t){var e=q('toast');e.textContent=msg;e.className='toast '+t+' show';clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('show');},4000);}
+
+setInterval(function(){st('clk',new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata',hour12:true,hour:'2-digit',minute:'2-digit',second:'2-digit'})+' IST');},1000);
+
+function doLogin(){
+  var u=q('lU').value.trim(),p=q('lP').value.trim();
+  var err=q('lerr');
+  if(u===CREDS.u&&p===CREDS.p){
+    err.classList.remove('show');
+    q('loginScreen').style.display='none';
+    q('mainArea').style.display='flex';
+    q('aAv').textContent=u[0].toUpperCase();
+    q('aNm').textContent=u.charAt(0).toUpperCase()+u.slice(1);
+    init();
+  }else{err.textContent='Wrong credentials! Use admin / admin123';err.classList.add('show');}
+}
+q('lP').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+
+function doLogout(){q('mainArea').style.display='none';q('loginScreen').style.display='flex';q('lP').value='';clearInterval(arTimer);}
+
+var TITLES={dashboard:'Dashboard',bookings:'Bookings',contacts:'Contacts & Enquiries',reviews:'Customer Reviews',users:'Registered Users',newsletter:'Newsletter Subscribers',packages:'Tour Packages',destinations:'Destinations',settings:'Settings'};
+function go(page,el){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.sb-item').forEach(function(n){n.classList.remove('active');});
+  var pg=q('page-'+page);if(pg)pg.classList.add('active');
+  if(el)el.classList.add('active');
+  st('pgTitle',TITLES[page]||page);
+  if(page==='packages')rPk();
+  if(page==='destinations')rDs();
+  if(page==='settings')rSet();
+}
+
+async function af(path,method,body){
+  try{
+    var opts={method:method||'GET',headers:{'Content-Type':'application/json'}};
+    if(body)opts.body=JSON.stringify(body);
+    var r=await fetch(API+path,opts);
+    return await r.json();
+  }catch(e){console.warn('API:',e.message);return null;}
+}
+
+async function init(){await refreshAll();startAR();}
+
+async function refreshAll(){
+  var btn=q('rfBtn');if(btn)btn.classList.add('spin');
+  await loadAll();
+  renderDash();
+  if(btn)setTimeout(function(){btn.classList.remove('spin');},400);
+}
+
+async function loadAll(){
+  var rs=await af('/stats');
+  var rb=await af('/bookings/all');
+  var rc=await af('/contacts/all');
+  var rr=await af('/reviews/all');
+  var ru=await af('/users/all');
+  var rn=await af('/newsletter/all');
+
+  if(rs&&rs.success&&rs.data){
+    var s=rs.data;
+    st('sv-bk',s.totalBookings||0);
+    st('sv-ct',s.totalContacts||0);
+    st('sv-rv',s.totalReviews||0);
+    st('sv-us',s.totalUsers||0);
+    q('sDot').className='dot';st('sStatus','API Online');
+    st('sv-us2',(s.newsletterSubs||0)+' newsletter subs');
+  }else{
+    q('sDot').className='dot red';st('sStatus','API Offline');
+    st('sv-bk','-');st('sv-ct','-');st('sv-rv','-');st('sv-us','-');
+    st('sv-bk2','Start backend: cd backend && npm start');
+  }
+
+  if(rb&&rb.data){
+    D.bk=rb.data;
+    var un=D.bk.length;
+    setBdg('b-bk',un);
+    st('sv-bk2',un+' total bookings');
+  }
+  if(rc&&rc.data){
+    D.ct=rc.data;
+    var unrd=D.ct.filter(function(c){return c.status==='New';}).length;
+    setBdg('b-ct',unrd);
+    st('sv-ct2',unrd+' new unread');
+  }
+  if(rr&&rr.data){
+    D.rv=rr.data;
+    var pnd=D.rv.filter(function(r){return!r.approved;}).length;
+    setBdg('b-rv',pnd);
+    st('sv-rv2',pnd+' pending approval');
+  }
+  if(ru&&ru.data) D.us=ru.data;
+  if(rn&&rn.data) D.nl=rn.data;
+
+  rBk();rCt();rRv();rUs();rNl();
+}
+
+function setBdg(id,n){var e=q(id);if(!e)return;e.textContent=n;e.classList[n>0?'add':'remove']('show');}
+
+function renderDash(){
+  q('d-bk').innerHTML=D.bk.slice(0,6).length
+    ?D.bk.slice(0,6).map(function(b){return'<tr><td><span class="mono" style="cursor:pointer" onclick="openBkM(\''+b.id+'\')">'+(b.bookingId||b.id.slice(0,8))+'</span></td><td><div style="display:flex;align-items:center;gap:7px"><div class="av">'+(b.name||'?')[0]+'</div>'+b.name+'</div></td><td class="muted trunc">'+(b.packageName||'-')+'</td><td class="muted">'+(b.travelDate||'-')+'</td><td style="color:var(--green);font-weight:600">'+fa(b.finalAmount)+'</td><td>'+bsBdg(b.status)+'</td></tr>';}).join('')
+    :'<tr><td colspan="6"><div class="empty"><div class="empty-ico">&#128219;</div><p>No bookings yet</p></div></td></tr>';
+  q('d-ct').innerHTML=D.ct.slice(0,6).length
+    ?D.ct.slice(0,6).map(function(c){return'<tr><td><span class="mono">'+(c.ticketId||'-')+'</span></td><td>'+c.firstName+' '+(c.lastName||'')+'</td><td class="muted trunc">'+(c.package||'General')+'</td><td>'+cbBdg(c.status)+'</td></tr>';}).join('')
+    :'<tr><td colspan="4"><div class="empty"><div class="empty-ico">&#128219;</div><p>No contacts yet</p></div></td></tr>';
+
+  // Booking status chart
+  var smap={};D.bk.forEach(function(b){smap[b.status]=(smap[b.status]||0)+1;});
+  var scolors={'Query Received':'#f78166','Confirmed':'#58a6ff','In Progress':'#e3b341','Completed':'#3fb950','Cancelled':'#8b949e'};
+  q('bkChart').innerHTML=Object.keys(smap).length
+    ?Object.keys(smap).map(function(s){return'<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:.72rem;margin-bottom:3px"><span style="color:var(--muted)">'+s+'</span><span style="font-weight:600">'+smap[s]+'</span></div><div class="mini-bar"><div class="mini-fill" style="width:'+Math.round(smap[s]/D.bk.length*100)+'%;background:'+(scolors[s]||'#58a6ff')+'"></div></div></div>';}).join('')
+    :'<div class="empty" style="padding:1rem"><p>No data</p></div>';
+
+  // Review distribution
+  var rmap={5:0,4:0,3:0,2:0,1:0};
+  D.rv.forEach(function(r){if(r.approved)rmap[r.rating]=(rmap[r.rating]||0)+1;});
+  var rt=Object.values(rmap).reduce(function(a,b){return a+b;},0)||1;
+  q('rvChart').innerHTML=[5,4,3,2,1].map(function(s){return'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:.72rem;color:var(--yellow);width:24px">'+s+'&#9733;</span><div class="mini-bar" style="flex:1"><div class="mini-fill" style="width:'+Math.round(rmap[s]/rt*100)+'%;background:var(--yellow)"></div></div><span style="font-size:.72rem;color:var(--muted);min-width:20px;text-align:right">'+rmap[s]+'</span></div>';}).join('');
+}
+
+function rBk(){
+  var q2=(q('bkSearch')?q('bkSearch').value:'').toLowerCase();
+  var f=FL.bk;
+  var list=D.bk.filter(function(b){return(f==='all'||b.status===f)&&(!q2||(b.name||'').toLowerCase().includes(q2)||(b.phone||'').includes(q2)||(b.bookingId||'').includes(q2)||(b.packageName||'').toLowerCase().includes(q2));});
+  st('bkCount',list.length+' booking'+(list.length!==1?'s':''));
+  q('bkBody').innerHTML=list.length
+    ?list.map(function(b){return'<tr><td><span class="mono" style="cursor:pointer;text-decoration:underline" onclick="openBkM(\''+b.id+'\')">'+(b.bookingId||b.id.slice(0,8))+'</span></td><td><div style="display:flex;align-items:center;gap:8px"><div class="av">'+(b.name||'?')[0]+'</div><div><div>'+b.name+'</div><div class="muted" style="font-size:.7rem">'+(b.email||'')+'</div></div></div></td><td class="muted">'+(b.phone||'')+'</td><td class="muted trunc">'+(b.packageName||'-')+'</td><td class="muted">'+(b.travelDate||'-')+'</td><td><span class="bdg bdg-b">'+(b.persons||1)+'p</span></td><td style="color:var(--green);font-weight:600">'+fa(b.finalAmount)+'</td><td>'+bsBdg(b.status)+'</td><td style="display:flex;gap:4px;flex-wrap:wrap"><button class="btn btn-sm" onclick="openBkM(\''+b.id+'\')">&#128065;</button><button class="btn btn-sm btn-g" onclick="updBkS(\''+b.id+'\',\'Confirmed\')">&#10003;</button><button class="btn btn-sm btn-r" onclick="updBkS(\''+b.id+'\',\'Cancelled\')">&#10005;</button></td></tr>';}).join('')
+    :'<tr><td colspan="9"><div class="empty"><div class="empty-ico">&#128219;</div><p>No bookings found</p></div></td></tr>';
+}
+
+function rCt(){
+  var q2=(q('ctSearch')?q('ctSearch').value:'').toLowerCase();
+  var f=FL.ct;
+  var list=D.ct.filter(function(c){return(f==='all'||c.status===f)&&(!q2||(c.firstName+' '+(c.lastName||'')).toLowerCase().includes(q2)||(c.email||'').includes(q2)||(c.ticketId||'').includes(q2));});
+  st('ctCount',list.length+' enqu'+(list.length!==1?'iries':'iry'));
+  q('ctBody').innerHTML=list.length
+    ?list.map(function(c){return'<tr><td><span class="mono">'+(c.ticketId||'-')+'</span></td><td><div style="display:flex;align-items:center;gap:8px"><div class="av o">'+(c.firstName||'?')[0]+'</div>'+c.firstName+' '+(c.lastName||'')+'</div></td><td class="muted" style="font-size:.72rem">'+(c.email||'-')+'</td><td class="muted">'+(c.phone||'&#8212;')+'</td><td class="muted" style="font-size:.72rem">'+(c.package||'General')+'</td><td class="muted" style="font-size:.72rem;font-style:italic;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">&#8220;'+((c.message||'').slice(0,50))+(c.message&&c.message.length>50?'...':'')+'&#8221;</td><td class="muted" style="font-size:.7rem">'+fds(c.createdAt)+'</td><td>'+cbBdg(c.status)+'</td><td style="display:flex;gap:4px;flex-wrap:wrap"><button class="btn btn-sm" onclick="openCtM(\''+c.id+'\')">&#128065;</button><button class="btn btn-sm btn-prl" onclick="openRp(\''+c.ticketId+'\',\''+c.firstName+' '+(c.lastName||'')+'\',\''+c.email+'\')">&#9993;</button><button class="btn btn-sm btn-g" onclick="updCtS(\''+c.ticketId+'\',\'Resolved\')">&#10003;</button></td></tr>';}).join('')
+    :'<tr><td colspan="9"><div class="empty"><div class="empty-ico">&#128219;</div><p>No contacts found</p></div></td></tr>';
+}
+
+function rRv(){
+  var f=FL.rv;
+  var list=D.rv.filter(function(r){
+    if(f==='pending')return!r.approved;
+    if(f==='approved')return r.approved;
+    if(f==='5')return r.rating===5;
+    if(f==='4')return r.rating===4;
+    if(f==='low')return r.rating<=3;
+    return true;
+  });
+  st('rvCount',list.length+' review'+(list.length!==1?'s':''));
+  q('rvBody').innerHTML=list.length
+    ?list.map(function(r){return'<tr><td><div style="display:flex;align-items:center;gap:8px"><div class="av p">'+(r.initials||(r.name||'?')[0])+'</div><div><div>'+r.name+'</div><div class="muted" style="font-size:.7rem">'+(r.city||'&#8212;')+'</div></div></div></td><td class="muted trunc" style="max-width:120px">'+(r.packageName||'&#8212;')+'</td><td><span class="stars">'+'\u2605'.repeat(r.rating)+'\u2606'.repeat(5-r.rating)+'</span></td><td style="font-size:.76rem;font-style:italic;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">&#8220;'+r.text+'&#8221;</td><td class="muted" style="font-size:.7rem">'+fds(r.createdAt)+'</td><td>'+(r.approved?'<span class="bdg bdg-g">&#9989; Approved</span>':'<span class="bdg bdg-o">&#9203; Pending</span>')+'</td><td style="display:flex;gap:4px">'+(!r.approved?'<button class="btn btn-sm btn-g" onclick="appRv(\''+r.id+'\')">&#9989; Approve</button>':'')+'<button class="btn btn-sm btn-r" onclick="delRv(\''+r.id+'\')">&#128465;</button></td></tr>';}).join('')
+    :'<tr><td colspan="7"><div class="empty"><div class="empty-ico">&#11088;</div><p>No reviews found</p></div></td></tr>';
+}
+
+function rUs(){
+  var q2=(q('usSearch')?q('usSearch').value:'').toLowerCase();
+  var list=D.us.filter(function(u){return!q2||(u.name||'').toLowerCase().includes(q2)||(u.email||'').includes(q2);});
+  st('usCount',list.length+' user'+(list.length!==1?'s':''));
+  q('usBody').innerHTML=list.length
+    ?list.map(function(u){return'<tr><td><div style="display:flex;align-items:center;gap:8px"><div class="av">'+(u.initials||(u.name||'?')[0])+'</div>'+u.name+'</div></td><td class="muted" style="font-size:.75rem">'+(u.email||'')+'</td><td class="muted">'+(u.phone||'&#8212;')+'</td><td>'+rbBdg(u.role)+'</td><td class="muted" style="font-size:.7rem">'+fds(u.lastLogin)+'</td><td class="muted" style="font-size:.7rem">'+fds(u.createdAt)+'</td><td>'+(u.isActive!==false?'<span class="bdg bdg-g">Active</span>':'<span class="bdg bdg-r">Disabled</span>')+'</td><td><button class="btn btn-sm btn-y" onclick="tglUs(\''+u.id+'\',\''+u.name+'\')">'+(u.isActive!==false?'Disable':'Enable')+'</button></td></tr>';}).join('')
+    :'<tr><td colspan="8"><div class="empty"><div class="empty-ico">&#128101;</div><p>No users</p></div></td></tr>';
+}
+
+function rNl(){
+  var list=D.nl;
+  var ac=list.filter(function(n){return n.isActive!==false;}).length;
+  st('nl-t',list.length);st('nl-a',ac);st('nl-u',list.length-ac);
+  q('nlBody').innerHTML=list.length
+    ?list.map(function(n,i){return'<tr><td class="muted">'+(i+1)+'</td><td style="color:var(--blue)">'+(n.email||'')+'</td><td><span class="bdg bdg-b">'+(n.source||'website')+'</span></td><td class="muted" style="font-size:.7rem">'+fd(n.subscribedAt)+'</td><td>'+(n.isActive!==false?'<span class="bdg bdg-g">Active</span>':'<span class="bdg bdg-r">Unsubscribed</span>')+'</td></tr>';}).join('')
+    :'<tr><td colspan="5"><div class="empty"><div class="empty-ico">&#128231;</div><p>No subscribers</p></div></td></tr>';
+}
+
+async function rPk(){
+  var r=await af('/packages');var list=(r&&r.data)||[];
+  st('pkCount',list.length+' packages');
+  q('pkBody').innerHTML=list.map(function(p,i){return'<tr><td class="muted">'+(i+1)+'</td><td><span class="bdg bdg-gray">'+p.key+'</span></td><td style="font-weight:600">'+p.title+'</td><td><span class="bdg bdg-b">'+p.category+'</span></td><td style="color:var(--green);font-weight:700">'+p.price+'</td><td class="muted">'+(p.nights||0)+'N</td><td><span class="stars">&#9733;</span> '+p.rating+'</td><td class="muted">'+((p.reviews||0).toLocaleString())+'</td><td class="muted trunc">'+(p.region||'&#8212;')+'</td></tr>';}).join('');
+}
+
+async function rDs(){
+  var r=await af('/destinations');var list=(r&&r.data)||[];
+  q('dsBody').innerHTML=list.map(function(d,i){return'<tr><td class="muted">'+(i+1)+'</td><td style="font-weight:600">'+d.name+'</td><td class="muted">'+d.region+'</td><td><span class="bdg bdg-p">'+d.category+'</span></td><td class="muted">'+d.altitude+'</td><td class="muted">'+d.bestTime+'</td><td><span class="stars">&#9733;</span> '+d.rating+'</td></tr>';}).join('');
+}
+
+async function rSet(){q('apiUrl').value=API;await chkHealth();}
+async function chkHealth(){
+  var r=await af('/health');
+  if(r&&r.success&&r.data){
+    var d=r.data;
+    st('srvTxt','Connected &#8212; Uptime: '+d.uptime);
+    q('srvInfo').innerHTML='<b>Server Info</b><br>Framework: <span style="color:var(--blue)">'+d.framework+'</span><br>Database: <span style="color:var(--green)">'+d.database+'</span><br>DB Path: <span style="color:var(--muted)">'+d.dbPath+'</span><br>Version: <span style="color:var(--muted)">'+d.version+'</span><br>Uptime: <span style="color:var(--muted)">'+d.uptime+'</span><br>Time: <span style="color:var(--muted)">'+d.time+'</span>';
+    toast('Server connected!','s');
+  }else{
+    st('srvTxt','Cannot connect to server');
+    q('srvInfo').innerHTML='<span style="color:var(--red)">Server offline. Run: cd backend &amp;&amp; npm start</span>';
+    toast('Server offline!','e');
+  }
+}
+function applyUrl(){API=q('apiUrl').value.trim()||'http://localhost:5000/api';toast('URL updated. Refreshing...','i');setTimeout(refreshAll,400);}
+function startAR(){clearInterval(arTimer);arTimer=setInterval(refreshAll,30000);}
+function toggleAR(btn){btn.classList.toggle('on');if(btn.classList.contains('on'))startAR();else clearInterval(arTimer);toast(btn.classList.contains('on')?'Auto refresh ON':'Auto refresh OFF','i');}
+function chgPass(){var np=q('nP').value,cp=q('cP').value;if(np.length<6){toast('Password 6+ chars','e');return;}if(np!==cp){toast('Passwords do not match','e');return;}CREDS.p=np;q('nP').value='';q('cP').value='';toast('Password updated!','s');}
+async function doBackup(){var r=await af('/admin/backup','POST');if(r&&r.success)toast('Backup created: '+r.file,'s');else toast('Backup failed','e');}
+
+// Filters
+function sf(btn,type,val){btn.closest('.fb').querySelectorAll('.fbtn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');FL[type.replace('ooks','k').replace('ontact','t')]=val;if(type==='bookings')rBk();else rCt();}
+function srf(btn,val){btn.closest('.fb').querySelectorAll('.fbtn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');FL.rv=val;rRv();}
+
+// Modals
+function om(id){q(id).classList.add('open');}
+function cm(id){q(id).classList.remove('open');}
+
+function openBkM(id){
+  var b=D.bk.find(function(x){return x.id===id||x.bookingId===id;});
+  if(!b){toast('Not found','e');return;}
+  q('bkMb').innerHTML='<div class="dr"><div class="dl">Booking ID</div><div class="dv mono">'+(b.bookingId||b.id.slice(0,10))+'</div></div>'
+    +'<div class="dr"><div class="dl">Customer</div><div class="dv">'+b.name+'</div></div>'
+    +'<div class="dr"><div class="dl">Phone</div><div class="dv"><a href="tel:'+b.phone+'" style="color:var(--green)">'+b.phone+'</a></div></div>'
+    +'<div class="dr"><div class="dl">Email</div><div class="dv">'+(b.email?'<a href="mailto:'+b.email+'" style="color:var(--blue)">'+b.email+'</a>':'&#8212;')+'</div></div>'
+    +'<div class="dr"><div class="dl">Package</div><div class="dv">'+b.packageName+'</div></div>'
+    +'<div class="dr"><div class="dl">Travel Date</div><div class="dv">'+b.travelDate+'</div></div>'
+    +'<div class="dr"><div class="dl">Persons</div><div class="dv">'+b.persons+'</div></div>'
+    +'<div class="dr"><div class="dl">Amount</div><div class="dv" style="color:var(--green);font-weight:700">'+fa(b.finalAmount)+' <span style="color:var(--muted);font-size:.72rem">(incl. GST '+fa(b.gstAmount)+')</span></div></div>'
+    +'<div class="dr"><div class="dl">Special Req.</div><div class="dv">'+(b.specialRequests||'None')+'</div></div>'
+    +'<div class="dr"><div class="dl">Status</div><div class="dv">'+bsBdg(b.status)+'</div></div>'
+    +'<div class="dr"><div class="dl">Submitted</div><div class="dv muted">'+fd(b.createdAt)+'</div></div>'
+    +'<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--brd)"><div style="font-size:.7rem;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;font-weight:600">Update Status</div>'
+    +'<div style="display:flex;gap:6px;flex-wrap:wrap">'
+    +'<button class="btn btn-sm btn-y" onclick="updBkS(\''+b.id+'\',\'Confirmed\');cm(\'bkModal\')">&#10003; Confirm</button>'
+    +'<button class="btn btn-sm btn-prl" onclick="updBkS(\''+b.id+'\',\'In Progress\');cm(\'bkModal\')">&#8635; In Progress</button>'
+    +'<button class="btn btn-sm btn-g" onclick="updBkS(\''+b.id+'\',\'Completed\');cm(\'bkModal\')">&#127881; Complete</button>'
+    +'<button class="btn btn-sm btn-r" onclick="updBkS(\''+b.id+'\',\'Cancelled\');cm(\'bkModal\')">&#10005; Cancel</button>'
+    +'</div></div>';
+  q('bkMf').innerHTML=(b.phone?'<a href="tel:'+b.phone+'" class="btn btn-sm btn-g">&#128222; Call '+b.name.split(' ')[0]+'</a>':'')+
+    (b.email?'<a href="mailto:'+b.email+'" class="btn btn-sm">&#9993; Email</a>':'')+
+    '<button class="btn btn-sm" onclick="cm(\'bkModal\')">Close</button>';
+  om('bkModal');
+}
+
+function openCtM(id){
+  var c=D.ct.find(function(x){return x.id===id||x.ticketId===id;});
+  if(!c){toast('Not found','e');return;}
+  q('ctMb').innerHTML='<div class="dr"><div class="dl">Ticket ID</div><div class="dv mono">'+(c.ticketId||'-')+'</div></div>'
+    +'<div class="dr"><div class="dl">Name</div><div class="dv">'+c.firstName+' '+(c.lastName||'')+'</div></div>'
+    +'<div class="dr"><div class="dl">Email</div><div class="dv"><a href="mailto:'+c.email+'" style="color:var(--blue)">'+c.email+'</a></div></div>'
+    +'<div class="dr"><div class="dl">Phone</div><div class="dv">'+(c.phone?'<a href="tel:'+c.phone+'" style="color:var(--green)">'+c.phone+'</a>':'&#8212;')+'</div></div>'
+    +'<div class="dr"><div class="dl">Package</div><div class="dv">'+(c.package||'General Enquiry')+'</div></div>'
+    +'<div class="dr"><div class="dl">Travel Date</div><div class="dv">'+(c.travelDate||'&#8212;')+'</div></div>'
+    +'<div class="dr"><div class="dl">Travelers</div><div class="dv">'+(c.travelers||1)+'</div></div>'
+    +'<div class="dr"><div class="dl">Message</div><div class="dv" style="line-height:1.6">'+c.message+'</div></div>'
+    +'<div class="dr"><div class="dl">Status</div><div class="dv">'+cbBdg(c.status)+'</div></div>'
+    +'<div class="dr"><div class="dl">Received</div><div class="dv muted">'+fd(c.createdAt)+'</div></div>'
+    +(c.repliedAt?'<div class="dr"><div class="dl">Replied</div><div class="dv muted">'+fd(c.repliedAt)+'</div></div>':'');
+  q('ctMf').innerHTML=(c.phone?'<a href="tel:'+c.phone+'" class="btn btn-sm btn-g">&#128222; Call</a>':'')+
+    '<button class="btn btn-sm btn-prl" onclick="cm(\'ctModal\');openRp(\''+c.ticketId+'\',\''+c.firstName+' '+(c.lastName||'')+'\',\''+c.email+'\')">&#9993; Reply</button>'+
+    '<button class="btn btn-sm btn-y" onclick="updCtS(\''+c.ticketId+'\',\'In Progress\');cm(\'ctModal\')">&#8635; In Progress</button>'+
+    '<button class="btn btn-sm btn-g" onclick="updCtS(\''+c.ticketId+'\',\'Resolved\');cm(\'ctModal\')">&#10003; Resolve</button>'+
+    '<button class="btn btn-sm" onclick="cm(\'ctModal\')">Close</button>';
+  om('ctModal');
+}
+
+function openRp(tid,name,email){rpTkt=tid;q('rpTo').innerHTML='Replying to: <strong>'+name+'</strong> &lt;<span style="color:var(--blue)">'+email+'</span>&gt;';q('rpMsg').value='';om('rpModal');}
+async function sendReply(){
+  var msg=q('rpMsg').value.trim();if(!msg){toast('Write a reply','e');return;}
+  var r=await af('/contacts/'+rpTkt+'/reply','POST',{message:msg});
+  if(r&&r.success){toast('Reply logged!','s');cm('rpModal');await loadAll();}
+  else toast((r&&r.message)||'Reply failed','e');
+}
+
+// Actions
+async function updBkS(id,status){
+  var b=D.bk.find(function(x){return x.id===id||x.bookingId===id;});if(!b)return;
+  var bid=b.bookingId||b.id;
+  var r=await af('/bookings/'+bid+'/status','PUT',{status:status});
+  b.status=status;rBk();renderDash();
+  toast('Booking '+status+(r&&r.success?'':' (local)'),'s');
+}
+
+async function updCtS(tid,status){
+  var c=D.ct.find(function(x){return x.ticketId===tid;});if(!c)return;
+  await af('/contacts/'+tid+'/status','PUT',{status:status});
+  c.status=status;if(status==='Resolved')c.repliedAt=new Date().toISOString();
+  rCt();renderDash();
+  var unrd=D.ct.filter(function(c){return c.status==='New';}).length;
+  setBdg('b-ct',unrd);
+  toast('Contact status: '+status,'s');
+}
+
+async function appRv(id){
+  var r=await af('/reviews/'+id+'/approve','PUT');
+  var rv=D.rv.find(function(x){return x.id===id;});
+  if(rv)rv.approved=true;
+  rRv();renderDash();
+  var pnd=D.rv.filter(function(r){return!r.approved;}).length;setBdg('b-rv',pnd);
+  toast((r&&r.success?r.message:'Review approved (local)'),'s');
+}
+
+async function approveAll(){
+  var pnd=D.rv.filter(function(r){return!r.approved;});
+  if(!pnd.length){toast('No pending reviews','i');return;}
+  var cnt=0;
+  for(var i=0;i<pnd.length;i++){var r2=await af('/reviews/'+pnd[i].id+'/approve','PUT');if(r2&&r2.success){pnd[i].approved=true;cnt++;}}
+  rRv();renderDash();setBdg('b-rv',0);
+  toast(cnt+' reviews approved!','s');
+}
+
+async function delRv(id){
+  if(!confirm('Delete this review permanently?'))return;
+  await af('/reviews/'+id+'/delete','DELETE');
+  D.rv=D.rv.filter(function(x){return x.id!==id;});rRv();renderDash();
+  toast('Review deleted','e');
+}
+
+async function tglUs(id,name){
+  var u=D.us.find(function(x){return x.id===id;});if(!u)return;
+  await af('/users/'+id+'/toggle','PUT');
+  u.isActive=!u.isActive;rUs();
+  toast(name+' '+(u.isActive?'activated':'disabled'),'i');
+}
+
+// Export CSV
+function expCSV(type){
+  var h,rows;
+  if(type==='bookings'){h=['Booking ID','Name','Phone','Email','Package','Travel Date','Persons','Amount','GST','Total','Status','Requests','Submitted'];rows=D.bk.map(function(b){return[b.bookingId,b.name,b.phone,b.email||'',b.packageName,b.travelDate,b.persons,b.totalAmount||0,b.gstAmount||0,b.finalAmount||0,b.status,'"'+(b.specialRequests||'').replace(/"/g,"'")+'"',b.createdAt];});}
+  else if(type==='contacts'){h=['Ticket','First Name','Last Name','Email','Phone','Package','Message','Status','Received'];rows=D.ct.map(function(c){return[c.ticketId,c.firstName,c.lastName||'',c.email,c.phone||'',c.package||'','"'+(c.message||'').replace(/"/g,"'")+'"',c.status,c.createdAt];});}
+  else if(type==='newsletter'){h=['Email','Source','Status','Subscribed'];rows=D.nl.map(function(n){return[n.email,n.source||'website',n.isActive!==false?'Active':'Unsubscribed',n.subscribedAt];});}
+  else if(type==='users'){h=['Name','Email','Phone','Role','Joined','Last Login','Active'];rows=D.us.map(function(u){return[u.name,u.email,u.phone||'',u.role||'user',u.createdAt,u.lastLogin||'',u.isActive!==false?'Yes':'No'];});}
+  var bom='\uFEFF';
+  var csv=bom+[h,...rows].map(function(r){return r.join(',');}).join('\n');
+  var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='devbhoomi_'+type+'_'+new Date().toISOString().split('T')[0]+'.csv';a.click();
+  toast(type+'.csv downloaded!','s');
+}
+
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('.mov.open').forEach(function(m){m.classList.remove('open');});});
+document.querySelectorAll('.mov').forEach(function(ov){ov.addEventListener('click',function(e){if(e.target===ov)ov.classList.remove('open');});});
+</script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+══════════════════════════════════════════════════
+  DevBhoomi Travels — Website + Backend Setup
+══════════════════════════════════════════════════
+
+WEBSITE KAISE CHALAYEIN:
+  index.html browser mein directly open karo.
+  (Chrome/Edge/Firefox — double click karo)
+
+BACKEND SERVER KAISE CHALAYEIN:
+  Step 1: Terminal kholo
+  Step 2: cd backend
+  Step 3: npm install    (pehli baar hi karein)
+  Step 4: npm start
+
+  Server chalega: http://localhost:5000
+
+BACKEND AGAR NA CHALE:
+  - Node.js install karein: https://nodejs.org
+  - Phir step 2-4 dobara karein
+
+WHAT WORKS WITHOUT BACKEND:
+  - Poori website normal dikhegi
+  - Packages, destinations, gallery — sab kaam karega
+  - Comparison, search, lightbox — sab theek
+
+WHAT NEEDS BACKEND (server chal raha ho):
+  - Login / Signup (real accounts)
+  - Booking form submit (database mein jayega)
+  - Contact form (server mein save hoga)
+  - Reviews (approve karke server se load honge)
+  - Newsletter subscribe
+
+ADMIN DATA DEKHNE KE LIYE (browser mein):
+  http://localhost:5000/api/bookings/all
+  http://localhost:5000/api/contacts/all
+  http://localhost:5000/api/reviews/all
+  http://localhost:5000/api/newsletter/all
+  http://localhost:5000/api/users/all
+
+NOTE: Data in-memory hai — server restart pe clear hoga.
+      Real database ke liye MongoDB/MySQL add karna hoga.
+══════════════════════════════════════════════════
