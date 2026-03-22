@@ -1,7 +1,7 @@
 // query.js — Send Query → Bookings
 
 (function () {
-  var API = "http://localhost:5000/api";
+  var API = "https://devbhoomi-travels.onrender.com/api";
 
   function showToast(msg, ok) {
     var t = document.getElementById("qToast");
