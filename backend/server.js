@@ -181,7 +181,31 @@ app.get('/api/auth/profile', authMiddleware, async (req, res) => {
     res.json({ success: true, user });
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
+app.post('/api/contact', (req, res) => {
+  try {
+    const { name, email } = req.body;
 
+    if (!name || !email) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields required"
+      });
+    }
+
+    console.log("Contact Form Data:", { name, email });
+
+    res.json({
+      success: true,
+      message: "Message received successfully"
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+  }
+});
 // ── BOOKINGS ──
 app.post('/api/bookings', async (req, res) => {
   try {

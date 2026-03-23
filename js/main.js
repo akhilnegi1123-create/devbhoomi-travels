@@ -151,16 +151,28 @@ function submitContact() {
   if (!email || !name) { showToast('⚠️ Please fill required fields'); return; }
   btn.textContent = 'Sending…';
   btn.disabled = true;
-  setTimeout(() => {
-    btn.textContent = '✅ Message Sent!';
-    btn.classList.add('sent');
-    showToast('✅ Thank you! We\'ll contact you within 24 hours.');
-    setTimeout(() => {
-      btn.textContent = 'Send Message 🏔️';
-      btn.disabled = false;
-      btn.classList.remove('sent');
-    }, 3000);
-  }, 1500);
+  fetch("https://devbhoomi-travels.onrender.com/api/contact", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    name: name,
+    email: email
+  })
+})
+.then(res => res.json())
+.then(data => {
+  btn.textContent = '✅ Message Sent!';
+  btn.classList.add('sent');
+  showToast('Thank you! We\'ll contact you within 24 hours.');
+  btn.disable = false;
+})
+.catch(err => {
+  btn.textContent = '❌ Error';
+  console.error(err);
+  btn.disabled = false;
+});
 }
 
 /* ─── Wishlist ─── */
