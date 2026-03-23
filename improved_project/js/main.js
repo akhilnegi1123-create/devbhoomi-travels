@@ -172,6 +172,11 @@ function wishToggle(e, btn) {
 
 /* ─── Auth ─── */
 function openAuth(t) {
+  // Pehle drawer band karo
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('hamBtn').classList.remove('active');
+
+  // Phir modal kholo
   document.getElementById(t === 'login' ? 'loginMod' : 'signupMod').classList.add('show');
   document.body.style.overflow = 'hidden';
 }

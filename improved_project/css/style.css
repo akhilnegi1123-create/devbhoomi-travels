@@ -73,6 +73,16 @@ nav.scrolled{padding:.65rem 5rem;box-shadow:0 4px 28px var(--shadow);}
   font-size:.82rem;font-weight:700;transition:all .25s;}
 .btn-su:hover{background:var(--pine);transform:translateY(-1px);}
 
+/* Line 74 ke baad — Mobile button fix */
+.drawer-btns .btn-ln,
+.drawer-btns .btn-su {
+  pointer-events: auto !important;
+  z-index: 9200;
+  min-height: 44px;
+  width: 100%;
+  display: block;
+}
+
 /* Hamburger */
 .ham{display:none;flex-direction:column;justify-content:center;gap:5px;
   background:none;border:none;cursor:pointer;padding:.4rem;z-index:9100;position:relative;}
@@ -590,7 +600,7 @@ footer{background:var(--bark);color:rgba(250,247,240,.55);padding:3.2rem 5rem 1.
    MODALS
 ══════════════════════════════════════ */
 .m-ov{display:none;position:fixed;inset:0;background:rgba(26,58,42,.65);
-  backdrop-filter:blur(10px);z-index:9500;align-items:center;justify-content:center;padding:1rem;}
+  backdrop-filter:blur(10px);z-index:999999;align-items:center;justify-content:center;padding:1rem;}
 .m-ov.show{display:flex;animation:ovFade .25s ease;}
 @keyframes ovFade{from{opacity:0}to{opacity:1}}
 .m-box{background:var(--snow);border-radius:26px;padding:1.55rem 1.95rem;width:100%;
@@ -3006,3 +3016,14 @@ footer{background:linear-gradient(135deg,var(--maroon) 0%,#3A0C0C 100%);color:va
 @media(max-width:768px){.desktop-nav{display:none}.hamburger{display:flex}.mobile-nav{display:flex}.quick-info{grid-template-columns:repeat(2,1fr)}.qi-item:nth-child(2){border-right:none}.qi-item:nth-child(1),.qi-item:nth-child(2){border-bottom:1px solid rgba(200,155,42,.3)}.gallery-grid{grid-template-columns:repeat(2,1fr)}.footer-grid{grid-template-columns:1fr 1fr}.footer-brand{grid-column:1/-1}.footer-bottom{justify-content:center;text-align:center}}
 @media(max-width:480px){.hero{height:300px}.form-grid{grid-template-columns:1fr}.form-grid .full{grid-column:1}.gallery-grid{grid-template-columns:repeat(2,1fr);gap:8px}.footer-grid{grid-template-columns:1fr;gap:24px}.footer-brand{grid-column:1}.sticky-price span{display:none}.wa-label{display:none}footer{margin-bottom:56px}.tabs-wrap{padding:0 16px}.booking-wrap{padding:0 16px}.gallery{padding:0 16px 40px}}
 @media(max-width:360px){.logo h1{font-size:12px}.hero{height:260px}.sticky-bar{padding:10px 12px}}
+
+/* ===== AUTH MODAL FIX ===== */
+#loginMod,
+#signupMod {
+  position: fixed !important;
+  z-index: 99999 !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
