@@ -70,7 +70,6 @@ const contactSchema = new mongoose.Schema({
   status:     { type: String, default: 'New' },
   createdAt:  { type: Date, default: Date.now }
 });
-const Contact = mongoose.model('Contact', contactSchema);
 
 const reviewSchema = new mongoose.Schema({
   id:          { type: String, default: () => uuidv4() },
@@ -439,4 +438,4 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 DevBhoomi Backend: http://localhost:${PORT}`);
   console.log(`✅ Health: http://localhost:${PORT}/api/health`);
 });
-// deploy test
+// deploy
