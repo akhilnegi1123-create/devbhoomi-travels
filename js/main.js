@@ -678,3 +678,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // Render initial search results
   if (document.getElementById('searchResults')) renderSearchResults('');
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  document.querySelectorAll('.m-close').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const modal = this.closest('.m-ov');
+      if (modal) {
+        modal.classList.remove('show');
+        modal.style.display = "none";
+      }
+    });
+  });
+
+});
