@@ -171,11 +171,17 @@ function wishToggle(e, btn) {
 }
 
 /* ─── Auth ─── */
+let _authOpening = false;
 function openAuth(t) {
+  if (_authOpening) return;
+  _authOpening = true;
+  setTimeout(() => { _authOpening = false; }, 500);
   document.getElementById('drawer').classList.remove('open');
   document.getElementById('hamBtn').classList.remove('open');
-  document.getElementById(t === 'login' ? 'loginMod' : 'signupMod').classList.add('show');
-  document.body.style.overflow = 'hidden';
+  setTimeout(function() {
+    document.getElementById(t === 'login' ? 'loginMod' : 'signupMod').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }, 50);
 }
 function closeAuth(id) {
   document.getElementById(id).classList.remove('show');
