@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const Contact = require('./models/Contact');
 const { v4: uuidv4 } = require('uuid');
 
 const app = express();
@@ -67,7 +68,6 @@ const contactSchema = new mongoose.Schema({
   status:    { type: String, default: 'unread' }, // unread | read | replied
   createdAt: { type: Date, default: Date.now }
 });
-const Contact = mongoose.model('Contact', contactSchema);
 
 // Review Schema
 const reviewSchema = new mongoose.Schema({
