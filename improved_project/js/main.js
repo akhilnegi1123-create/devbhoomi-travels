@@ -172,10 +172,8 @@ function wishToggle(e, btn) {
 
 /* ─── Auth ─── */
 function openAuth(t) {
-  // Drawer band karo
   document.getElementById('drawer').classList.remove('open');
   document.getElementById('hamBtn').classList.remove('open');
-  // Modal kholo
   document.getElementById(t === 'login' ? 'loginMod' : 'signupMod').classList.add('show');
   document.body.style.overflow = 'hidden';
 }
