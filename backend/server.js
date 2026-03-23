@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bcrypt   = require('bcryptjs');
 const jwt      = require('jsonwebtoken');
 const cors     = require('cors');
+const Contact  = require('./models/Contact');
 const { v4: uuidv4 } = require('uuid');
 
 const app = express();
@@ -181,7 +182,7 @@ app.get('/api/auth/profile', authMiddleware, async (req, res) => {
     res.json({ success: true, user });
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-app.post('/api/contact', (req, res) => {
+app.post('/api/contact', async (req, res) => {
   try {
     const { name, email } = req.body;
 
@@ -192,11 +193,30 @@ app.post('/api/contact', (req, res) => {
       });
     }
 
-    console.log("Contact Form Data:", { name, email });
+    const newContact = new Contact({ name, email });
+    await newContact.save();
 
     res.json({
       success: true,
       message: "Message received successfully"
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+  }
+});
+
+// 👇 YEH YAHI DALNA HAI
+app.get('/contacts/all', async (req, res) => {
+  try {
+    const contacts = await Contact.find().sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      data: contacts
     });
 
   } catch (err) {
