@@ -172,11 +172,10 @@ function wishToggle(e, btn) {
 
 /* ─── Auth ─── */
 function openAuth(t) {
-  // Pehle drawer band karo
+  // Drawer band karo
   document.getElementById('drawer').classList.remove('open');
-  document.getElementById('hamBtn').classList.remove('active');
-
-  // Phir modal kholo
+  document.getElementById('hamBtn').classList.remove('open');
+  // Modal kholo
   document.getElementById(t === 'login' ? 'loginMod' : 'signupMod').classList.add('show');
   document.body.style.overflow = 'hidden';
 }
@@ -617,22 +616,20 @@ function closeBooking() {
   document.getElementById('bookOv').classList.remove('show');
   document.body.style.overflow = '';
 }
-function updateBookSummary(price, persons) {
-  price = parseFloat(price);
-  if (!price || isNaN(price)) return; // ✅ crash रोकेगा
-
-  const subtotal = price * parseInt(persons);
-  const tax = subtotal * 0.05;
-  const total = subtotal + tax;
-
-  document.getElementById('bsSubtotal').textContent = 
-    '₹' + subtotal.toLocaleString('en-IN');
-  document.getElementById('bsTax').textContent = 
-    '₹' + Math.round(tax).toLocaleString('en-IN');
-  document.getElementById('bsTotal').textContent = 
-    '₹' + Math.round(total).toLocaleString('en-IN');
+function updateBookSummary(priceStr, persons) {
+  const price = parseInt(String(priceStr).replace(/[^0-9]/g,'')) || 0;
+  const n = parseInt(persons) || 1;
+  const sub = price * n;
+  const tax = Math.round(sub * 0.05);
+  const total = sub + tax;
+  const fmt = v => '₹' + v.toLocaleString('en-IN');
+  const s = document.getElementById('bsSubtotal');
+  const t = document.getElementById('bsTax');
+  const tt = document.getElementById('bsTotal');
+  if(s) s.textContent = fmt(sub);
+  if(t) t.textContent = fmt(tax);
+  if(tt) tt.textContent = fmt(total);
 }
-
 /* ── confirmBooking, doLogin, doSignup, submitReview, subscribeNewsletter
       — ye sab api.js mein real server calls ke saath hain ── */
 
