@@ -705,7 +705,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-async function doSignup() {
+window.doSignup = async function () {
   const data = {
     name: document.getElementById("sName").value,
     email: document.getElementById("sEmail").value,
@@ -722,9 +722,8 @@ async function doSignup() {
 
     const result = await res.json();
     alert(result.message);
-
   } catch (err) {
     console.log(err);
     alert("Signup failed ❌");
   }
-}
+};
