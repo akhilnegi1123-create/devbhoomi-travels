@@ -453,12 +453,14 @@ async function refreshAll(){
 }
 
 async function loadAll(){
-  var rs = await af('/api/stats');
-  var rb = await af('/api/bookings/all');
-  var rc = await af('/api/contacts/all');
-  var rr = await af('/api/reviews/all');
-  var ru = await af('/api/users/all');
-  var rn = await af('/api/newsletter/all');
+var BASE = "https://devbhoomi-travels.onrender.com";
+
+var rs = await af(BASE + '/api/stats');
+var rb = await af(BASE + '/api/bookings/all');
+var rc = await af(BASE + '/api/contacts/all');
+var rr = await af(BASE + '/api/reviews/all');
+var ru = await af(BASE + '/api/users/all');
+var rn = await af(BASE + '/api/newsletter/all');
 
   if(rs && rs.success){
     var s = rs.data || {};
