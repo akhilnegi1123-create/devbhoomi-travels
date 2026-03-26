@@ -433,14 +433,26 @@ function go(page,el){
   if(page==='settings')rSet();
 }
 
-
-async function af(path,method,body){
+async function af(path, method = "GET", body = null){
   try{
-    var opts={method:method||'GET',headers:{'Content-Type':'application/json'}};
-    if(body)opts.body=JSON.stringify(body);
-    var r=await fetch(API+path,opts);
-    return await r.json();
-  }catch(e){console.warn('API:',e.message);return null;}
+    const res = await fetch(API + path, {
+      method: method,
+      headers: { "Content-Type": "application/json" },
+      body: body ? JSON.stringify(body) : null
+    });
+
+    const data = await res.json(); // 👈 पहले data ले
+
+    if (!res.ok) {
+      console.warn("API FAIL:", res.status);
+    }
+
+    return data;
+
+  } catch (err){
+    console.error("FETCH ERROR:", err);
+    return null;
+  }
 }
 
 async function init(){await refreshAll();startAR();}
