@@ -460,8 +460,8 @@ async function loadAll(){
   var ru = await af('/api/users/all');
   var rn = await af('/api/newsletter/all');
 
-  if(rs&&rs.success&&rs.data){
-    var s=rs.data;
+  if(rs && rs.success){
+    var s = rs.data || {};
     st('sv-bk',s.totalBookings||0);
     st('sv-ct',s.totalContacts||0);
     st('sv-rv',s.totalReviews||0);
