@@ -603,7 +603,7 @@ async function chkHealth(){
     toast('Server offline!','e');
   }
 }
-function applyUrl(){API=q('apiUrl').value.trim()||'http://localhost:5000/api';toast('URL updated. Refreshing...','i');setTimeout(refreshAll,400);}
+function applyUrl(){API=q('apiUrl').value.trim()||'https://devbhoomi-travels.onrender.com/api';toast('URL updated. Refreshing...','i');setTimeout(refreshAll,400);}
 function startAR(){clearInterval(arTimer);arTimer=setInterval(refreshAll,30000);}
 function toggleAR(btn){btn.classList.toggle('on');if(btn.classList.contains('on'))startAR();else clearInterval(arTimer);toast(btn.classList.contains('on')?'Auto refresh ON':'Auto refresh OFF','i');}
 function chgPass(){var np=q('nP').value,cp=q('cP').value;if(np.length<6){toast('Password 6+ chars','e');return;}if(np!==cp){toast('Passwords do not match','e');return;}CREDS.p=np;q('nP').value='';q('cP').value='';toast('Password updated!','s');}
