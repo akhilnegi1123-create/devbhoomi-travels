@@ -435,21 +435,22 @@ function go(page,el){
 
 async function af(path, method = "GET", body = null){
   try{
-    const res = await fetch(API + path, {
+    let res = await fetch(API + path, {
       method: method,
       headers: { "Content-Type": "application/json" },
       body: body ? JSON.stringify(body) : null
     });
 
-    const data = await res.json(); // 👈 पहले data ले
-
+    // 👉 अगर fail हुआ तो retry
     if (!res.ok) {
-      console.warn("API FAIL:", res.status);
+      console.log("Retrying API...");
+      await new Promise(r => setTimeout(r, 2000)); // 2 sec wait
+      res = await fetch(API + path);
     }
 
-    return data;
+    return await res.json();
 
-  } catch (err){
+  } catch(err){
     console.error("FETCH ERROR:", err);
     return null;
   }
