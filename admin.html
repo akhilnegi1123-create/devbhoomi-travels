@@ -433,6 +433,7 @@ function go(page,el){
   if(page==='settings')rSet();
 }
 
+const API = "https://devbhoomi-travels.onrender.com";
 async function af(path,method,body){
   try{
     var opts={method:method||'GET',headers:{'Content-Type':'application/json'}};
