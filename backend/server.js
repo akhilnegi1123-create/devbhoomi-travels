@@ -12,7 +12,9 @@ const START_TIME = Date.now();
 
 app.use(cors({ origin: '*', methods: ['GET','POST','PUT','PATCH','DELETE'], allowedHeaders: ['Content-Type','Authorization'] }));
 app.use(express.json());
-app.use(express.static('../'));
+const path = require("path");
+
+app.use(express.static(path.join(__dirname, "../")));
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => { console.log('✅ MongoDB Connected!'); seedAdmin(); })
@@ -430,6 +432,10 @@ app.get('/api/destinations', (req, res) => {
     { name: 'Dehradun',    region: 'Garhwal', type: 'City & Hills' },
     { name: 'Chopta',      region: 'Garhwal', type: 'Trek & Meadows' }
   ]});
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../index.html"));
 });
 
 // ── START ──
