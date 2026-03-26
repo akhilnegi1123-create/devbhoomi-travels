@@ -472,7 +472,7 @@ var rr = await af('/reviews/all');
 var ru = await af('/users/all');
 var rn = await af('/newsletter/all');
 
-  if(rs && rs.success){
+  if(rs && (rs.success || rs.data)){
     var s = rs.data || {};
     st('sv-bk',s.totalBookings||0);
     st('sv-ct',s.totalContacts||0);
