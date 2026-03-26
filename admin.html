@@ -453,12 +453,12 @@ async function refreshAll(){
 }
 
 async function loadAll(){
-  var rs=await af('/stats');
-  var rb=await af('/bookings/all');
-  var rc=await af('/contacts/all');
-  var rr=await af('/reviews/all');
-  var ru=await af('/users/all');
-  var rn=await af('/newsletter/all');
+  var rs = await af('/api/stats');
+  var rb = await af('/api/bookings/all');
+  var rc = await af('/api/contacts/all');
+  var rr = await af('/api/reviews/all');
+  var ru = await af('/api/users/all');
+  var rn = await af('/api/newsletter/all');
 
   if(rs&&rs.success&&rs.data){
     var s=rs.data;
