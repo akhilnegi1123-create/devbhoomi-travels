@@ -385,7 +385,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
 <div class="toast" id="toast"></div>
 
 <script>
-var API='http://localhost:5000/api';
+const API = "https://devbhoomi-travels.onrender.com/api";  
 var CREDS={u:'admin',p:'admin123'};
 var arTimer=null;
 var rpTkt='';
@@ -433,7 +433,7 @@ function go(page,el){
   if(page==='settings')rSet();
 }
 
-const API = "https://devbhoomi-travels.onrender.com";
+
 async function af(path,method,body){
   try{
     var opts={method:method||'GET',headers:{'Content-Type':'application/json'}};
@@ -453,14 +453,12 @@ async function refreshAll(){
 }
 
 async function loadAll(){
-var BASE = "https://devbhoomi-travels.onrender.com";
-
-var rs = await af(BASE + '/api/stats');
-var rb = await af(BASE + '/api/bookings/all');
-var rc = await af(BASE + '/api/contacts/all');
-var rr = await af(BASE + '/api/reviews/all');
-var ru = await af(BASE + '/api/users/all');
-var rn = await af(BASE + '/api/newsletter/all');
+var rs = await af('/stats');
+var rb = await af('/bookings/all');
+var rc = await af('/contacts/all');
+var rr = await af('/reviews/all');
+var ru = await af('/users/all');
+var rn = await af('/newsletter/all');
 
   if(rs && rs.success){
     var s = rs.data || {};
