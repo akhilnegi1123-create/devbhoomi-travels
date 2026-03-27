@@ -272,21 +272,18 @@ document.addEventListener('keydown', e => {
 });
 
 // 🔥 LOGIN FUNCTION (ADD AT END)
-async function loginUser() {
+window.loginUser = async function () {
   const email = document.getElementById("lEmail").value;
   const password = document.getElementById("lPass").value;
 
   try {
-    const res = await fetch("https://devbhoomi-travels.onrender.com/api/login", {
+    const res = await fetch("https://devbhoomi-travels.onrender.com/api/auth/login", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
     });
 
     const data = await res.json();
-    console.log(data);
 
     if (data.success) {
       alert("Login successful ✅");
@@ -296,10 +293,10 @@ async function loginUser() {
     }
 
   } catch (err) {
-    console.error(err);
     alert("Server error ❌");
+    console.log(err);
   }
-}
+};
 /* ══════════════════════════════════════
    FEATURE 1: VIDEO BACKGROUND
 ══════════════════════════════════════ */
