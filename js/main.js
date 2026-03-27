@@ -1142,26 +1142,29 @@ function confirmBooking() {
    Yeh block sirf tab kaam karega jab vd-ov display:none ho
    by default. Adjust karo apni style.css ke hisaab se.
 ────────────────────────────────────────────────────────────── */
-(function injectVdStyles() {
-  if (document.getElementById('_vdStyles')) return;
+(function() {
+  if (document.getElementById('_vdstyles')) return;
+
   const s = document.createElement('style');
-  s.id = '_vdStyles';
+  s.id = '_vdstyles';
+
   s.textContent = `
-    #vdOv { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55);
-            z-index:9000; align-items:center; justify-content:center;
-            opacity:0; transition:opacity .28s ease; }
-    #vdOv.active { opacity:1; }
-    .vd-feat-item { background:var(--mist,#f4f6f0); border-radius:8px;
-                    padding:.5rem .8rem; font-size:.82rem; color:var(--forest,#1a3d2b);
-                    font-weight:600; }
-    .vd-feat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
-                    gap:.5rem; }
-    .vd-panel { display:none; }
-    .vd-panel.active { display:block; }
-    #bookOv { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55);
-              z-index:9100; align-items:center; justify-content:center;
-              opacity:0; transition:opacity .28s ease; }
-    #bookOv.active { opacity:1; }
+  #vdov { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55);
+    z-index:9000; align-items:center; justify-content:center;
+    opacity:0; transition:opacity .28s ease; }
+  #vdov.active { opacity:1; }
+  .vd-feat-item { background:var(--mist,#f4f6f0); border-radius:80px;
+    padding:.5rem .8rem; font-size:.82rem; color:var(--forest,#1a3d2b);
+    font-weight:600; }
+  .vd-feat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+    gap:.5rem; }
+  .vd-panel { display:none; }
+  .vd-panel.active { display:block; }
+  #bookov { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55);
+    z-index:9100; align-items:center; justify-content:center;
+    opacity:0; transition:opacity .28s ease; }
+  #bookov.active { opacity:1; }
   `;
+
   document.head.appendChild(s);
 })();
