@@ -6,19 +6,44 @@ const jwt      = require('jsonwebtoken');
 const cors     = require('cors');
 const Contact  = require('./models/contact');
 const { v4: uuidv4 } = require('uuid');
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 const app = express();
 const START_TIME = Date.now();
 
 app.use(cors({ origin: '*', methods: ['GET','POST','PUT','PATCH','DELETE'], allowedHeaders: ['Content-Type','Authorization'] }));
-app.use(express.json());
 const path = require("path");
 
-app.use(express.static(path.join(__dirname, "../")));
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => { console.log('✅ MongoDB Connected!'); seedAdmin(); })
   .catch(err => console.error('❌ MongoDB Error:', err));
+
+  passport.use(new googleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: "/auth/google/callback"
+},
+
+(accessToken, refreshToken, profile, done) => {
+  return done(null, profile);
+})); 
+
+app.use(express.json());
+app.use(passport.initialize());
+
+app.get("/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+app.get("/auth/google/callback",
+  passport.authenticate("google", { session: false }),
+  (req, res) => {
+    res.redirect("/");
+
+// ✅ STATIC LAST
+app.use(express.static(path.join(__dirname, "../")));
 
 // ── SCHEMAS ──
 const userSchema = new mongoose.Schema({
@@ -434,9 +459,22 @@ app.get('/api/destinations', (req, res) => {
   ]});
 });
 
+app.get("/auth/google", passport.authenticate("google", {
+  scope: ["profile", "email"]
+}));
+
+app.get("/auth/google/callback",
+  passport.authenticate("google", { session: false }),
+  (req, res) => {
+    res.redirect("https://devbhoomi-travels.onrender.com/");
+  }
+);
+
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../index.html"));
 });
+
+
 
 // ── START ──
 const PORT = process.env.PORT || 5000;

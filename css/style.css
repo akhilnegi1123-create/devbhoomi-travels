@@ -1139,7 +1139,7 @@ footer{background:var(--bark);color:rgba(250,247,240,.55);padding:3.2rem 5rem 1.
 .vws-item{display:flex;align-items:center;gap:.7rem;color:rgba(232,240,236,.75);font-size:.8rem;font-weight:600;}
 .vws-ico{font-size:1.4rem;}
 /* Detail Modal */
-.vd-ov{display:none;position:fixed;inset:0;background:rgba(26,58,42,.7);backdrop-filter:blur(10px);z-index:9500;align-items:flex-start;justify-content:center;padding:1.5rem 1rem;overflow-y:auto;}
+.vd-ov{display:none;position:fixed;inset:0;background:rgba(26,58,42,.7);backdrop-filter:blur(10px);z-index:10000;align-items:flex-start;justify-content:center;padding:1.5rem 1rem;overflow-y:auto;}
 .vd-ov.show{display:flex;animation:ovFade .25s ease;}
 .vd-box{background:var(--snow);border-radius:26px;width:100%;max-width:900px;overflow:hidden;animation:popUp .38s cubic-bezier(.34,1.56,.64,1) both;box-shadow:0 28px 70px rgba(0,0,0,.2);}
 .vd-hero{position:relative;height:320px;overflow:hidden;}

@@ -205,15 +205,15 @@ function switchAuth(c, o) {
   setTimeout(() => document.getElementById(o).classList.add('show'), 180);
 }
 function socialAuth(btn, prov, mode) {
-  const orig = btn.innerHTML;
-  btn.classList.add('loading');
-  btn.innerHTML = '<span>Connecting…</span>';
-  setTimeout(() => {
-    btn.classList.remove('loading');
-    btn.innerHTML = orig;
-    closeAuth(mode === 'login' ? 'loginMod' : 'signupMod');
-    showToast(`✅ ${mode === 'login' ? 'Logged in' : 'Signed up'} with ${prov === 'google' ? 'Google' : 'Facebook'}!`);
-  }, 1800);
+
+  if (prov === "google") {
+    window.location.href = "https://devbhoomi-travels.onrender.com/auth/google";
+    return;
+  }
+
+  if (prov === "facebook") {
+    alert("Facebook login coming soon");
+  }
 }
 
 /* ─── Toast ─── */
@@ -271,6 +271,35 @@ document.addEventListener('keydown', e => {
   }
 });
 
+// 🔥 LOGIN FUNCTION (ADD AT END)
+async function loginUser() {
+  const email = document.getElementById("lEmail").value;
+  const password = document.getElementById("lPass").value;
+
+  try {
+    const res = await fetch("https://devbhoomi-travels.onrender.com/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+    console.log(data);
+
+    if (data.success) {
+      alert("Login successful ✅");
+      window.location.href = "/";
+    } else {
+      alert(data.message || "Login failed ❌");
+    }
+
+  } catch (err) {
+    console.error(err);
+    alert("Server error ❌");
+  }
+}
 /* ══════════════════════════════════════
    FEATURE 1: VIDEO BACKGROUND
 ══════════════════════════════════════ */
@@ -728,3 +757,414 @@ window.doSignup = async function () {
     alert("Signup failed ❌");
   }
 };
+
+/* ═══════════════════════════════════════════════════════════════
+   vehicle.js  —  DevBhoomi Travels
+   Vehicle.html ke liye saare missing JS functions
+   Include karo Vehicle.html mein:
+     <script src="js/vehicle.js"></script>
+   (main.js ke BAAD)
+═══════════════════════════════════════════════════════════════ */
+
+/* ──────────────────────────────────────────────────────────────
+   VEHICLE DATA
+────────────────────────────────────────────────────────────── */
+const VEHICLES = {
+  fortuner: {
+    name: 'Toyota Fortuner',
+    sub: 'Luxury SUV · 7 Seater · 4x4 AWD',
+    price: '₹5,500',
+    img: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=900&q=85',
+    desc: 'Uttarakhand\'s favourite luxury mountain vehicle. 4×4 AWD with permanent traction control handles the toughest Himalayan passes with ease. Premium leather interiors, JBL surround sound, dual-zone AC and a professional mountain driver make every journey feel like a VIP experience — perfect for honeymoon trips, corporate travel and high-altitude adventures.',
+    feats: ['🏆 4x4 AWD', '❄️ Dual AC', '💎 Leather Seats', '🎵 JBL Sound', '📡 GPS', '🛎️ VIP Service', '🔦 Fog Lamps', '🧳 Roof Carrier'],
+    routes: [
+      { route: 'Dehradun → Kedarnath', km: '250 km', price: '₹6,000' },
+      { route: 'Haridwar → Auli', km: '320 km', price: '₹7,500' },
+      { route: 'Rishikesh → Char Dham', km: '500 km', price: '₹12,000' },
+      { route: 'Dehradun → Jim Corbett', km: '280 km', price: '₹7,000' },
+    ],
+    reviews: [
+      { name: 'Arjun Mehta', rating: 5, text: 'Best ride to Kedarnath! Driver was very experienced on mountain roads. Highly recommend.' },
+      { name: 'Priya Singh', rating: 5, text: 'Fortuner handled the snowy Auli roads perfectly. Very comfortable and spacious.' },
+    ],
+  },
+  innova_c: {
+    name: 'Toyota Innova Crysta',
+    sub: 'SUV · 7 Seater · Most Popular',
+    price: '₹3,500',
+    img: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=900&q=85',
+    desc: 'The most trusted vehicle for Uttarakhand travel. Innova Crysta combines generous cabin space with a powerful diesel engine that handles mountain inclines effortlessly. Push-back seats, individual reading lights and a quiet cabin make it the top choice for families and pilgrim groups alike.',
+    feats: ['❄️ AC', '📡 GPS', '🎵 Music System', '⛽ Diesel Engine', '💺 7 Recliner Seats', '🔦 Fog Lamps', '🧳 Boot Space', '📞 Charging Points'],
+    routes: [
+      { route: 'Dehradun → Mussoorie', km: '35 km', price: '₹1,200' },
+      { route: 'Haridwar → Rishikesh', km: '24 km', price: '₹900' },
+      { route: 'Dehradun → Kedarnath', km: '250 km', price: '₹4,500' },
+      { route: 'Rishikesh → Nainital', km: '310 km', price: '₹5,500' },
+    ],
+    reviews: [
+      { name: 'Sunita Rawat', rating: 5, text: 'Very comfortable for our family pilgrimage. Driver was helpful and punctual.' },
+      { name: 'Rakesh Gupta', rating: 4, text: 'Good vehicle, smooth ride on mountain roads. Will book again.' },
+    ],
+  },
+  tempo: {
+    name: 'Tempo Traveller 12-Seater',
+    sub: 'Group Vehicle · AC · Push-back Seats',
+    price: '₹5,500',
+    img: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=900&q=85',
+    desc: 'Ideal for medium-sized groups travelling together. The 12-seater Tempo Traveller features individual reclining seats, a roof carrier for extra luggage, full AC and a professional driver experienced with mountain routes. Great value for group pilgrimages, school trips and corporate outings.',
+    feats: ['❄️ Full AC', '💺 12 Recliner Seats', '🧳 Roof Rack', '📡 GPS', '🎵 Music System', '💡 Interior Lighting', '🔌 Charging Points', '🛡️ Insured'],
+    routes: [
+      { route: 'Haridwar → Kedarnath', km: '255 km', price: '₹7,000' },
+      { route: 'Dehradun → Char Dham Yatra', km: '500 km', price: '₹14,000' },
+      { route: 'Rishikesh → Valley of Flowers', km: '280 km', price: '₹8,000' },
+    ],
+    reviews: [
+      { name: 'Gaurav Sharma', rating: 5, text: 'Our group of 10 had a fantastic trip. Seats were very comfortable even on long stretches.' },
+      { name: 'Meena Agarwal', rating: 5, text: 'Driver was very courteous. AC worked perfectly in the hills. Highly recommended.' },
+    ],
+  },
+  bolero: {
+    name: 'Mahindra Bolero / Scorpio',
+    sub: 'Hill Expert · 4x4 · Off-Road',
+    price: '₹3,000',
+    img: 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=900&q=85',
+    desc: 'The Bolero and Scorpio are legendary on Uttarakhand\'s mountain trails. Built for rugged terrain, these 4×4 diesel workhorses tackle snow, mud and steep inclines where other vehicles hesitate. Perfect for trekking base camps, remote villages and off-beat destinations.',
+    feats: ['🏔️ 4x4 Drive', '⛽ Turbo Diesel', '🔦 Fog Lamps', '📡 GPS', '🛡️ Off-Road Ready', '🧳 Roof Carrier', '❄️ AC', '💪 High Ground Clearance'],
+    routes: [
+      { route: 'Dehradun → Chopta', km: '230 km', price: '₹4,000' },
+      { route: 'Rishikesh → Gangotri', km: '250 km', price: '₹4,500' },
+      { route: 'Haridwar → Hemkund Sahib', km: '290 km', price: '₹5,000' },
+    ],
+    reviews: [
+      { name: 'Vikram Negi', rating: 5, text: 'Amazing on the rough roads to Chopta. Felt very safe even in snow.' },
+      { name: 'Anita Rawat', rating: 4, text: 'Powerful vehicle. Great for remote places. Driver knew every turn.' },
+    ],
+  },
+  ertiga: {
+    name: 'Maruti Ertiga',
+    sub: 'Family Sedan · 7 Seater · Budget',
+    price: '₹2,200',
+    img: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=900&q=85',
+    desc: 'The most budget-friendly option for families who need 7 seats without breaking the bank. The Ertiga\'s CNG/petrol engine keeps running costs low, while its compact dimensions make it easy to navigate narrow hill roads. Comfortable for distances up to 300 km.',
+    feats: ['❄️ AC', '💺 7 Seats', '⛽ CNG / Petrol', '🎵 Music System', '📡 GPS', '🔌 USB Charging', '💡 LED Cabin Light', '💰 Budget-Friendly'],
+    routes: [
+      { route: 'Dehradun → Mussoorie', km: '35 km', price: '₹900' },
+      { route: 'Rishikesh → Haridwar', km: '24 km', price: '₹700' },
+      { route: 'Dehradun → Lansdowne', km: '165 km', price: '₹2,800' },
+    ],
+    reviews: [
+      { name: 'Pooja Verma', rating: 4, text: 'Good value for money. Comfortable for a day trip. Will book again.' },
+      { name: 'Rohan Bisht', rating: 5, text: 'Perfect for our small family. Clean car and friendly driver.' },
+    ],
+  },
+  crysta_etios: {
+    name: 'Etios / Swift Dzire',
+    sub: 'Compact Sedan · 4 Seater · Best Value',
+    price: '₹1,800',
+    img: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?w=900&q=85',
+    desc: 'Our most economical option for solo travellers and couples. The Etios and Swift Dzire are fuel-efficient, easy to park and comfortable for the city and hills alike. Air-conditioned, GPS-equipped and driven by a verified professional driver.',
+    feats: ['❄️ AC', '⛽ Fuel Efficient', '🎵 Music System', '📡 GPS', '💺 4 Seats', '🔌 USB Charging', '💰 Most Economical', '🚗 Easy on Hill Roads'],
+    routes: [
+      { route: 'Dehradun City Transfer', km: 'Local', price: '₹800' },
+      { route: 'Dehradun → Mussoorie', km: '35 km', price: '₹700' },
+      { route: 'Haridwar → Rishikesh', km: '24 km', price: '₹600' },
+      { route: 'Dehradun → Chakrata', km: '90 km', price: '₹1,500' },
+    ],
+    reviews: [
+      { name: 'Kiran Joshi', rating: 5, text: 'Very affordable and clean. Driver was on time. Perfect for a quick trip.' },
+      { name: 'Amit Thakur', rating: 4, text: 'Good for solo travel. AC was great. Would recommend.' },
+    ],
+  },
+  tempo17: {
+    name: 'Tempo Traveller 17-Seater',
+    sub: 'Large Group · AC Recliner · Group Favourite',
+    price: '₹7,500',
+    img: 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=900&q=85',
+    desc: 'Our largest Tempo Traveller, seating up to 17 passengers with full recliner seats, a roof luggage carrier, flat-screen TV, PA music system and powerful full-AC. Ideal for large family groups, pilgrimage tours, school picnics and corporate team outings.',
+    feats: ['❄️ Full AC', '💺 17 Recliner Seats', '🧳 Roof Carrier', '📺 Flat Screen TV', '🎵 PA Music System', '📡 GPS', '🔌 Charging Points', '🛡️ Fully Insured'],
+    routes: [
+      { route: 'Dehradun → Char Dham Yatra', km: '500 km', price: '₹18,000' },
+      { route: 'Haridwar → Kedarnath', km: '255 km', price: '₹10,000' },
+      { route: 'Rishikesh → Valley of Flowers', km: '280 km', price: '₹11,000' },
+      { route: 'Dehradun → Jim Corbett', km: '280 km', price: '₹11,500' },
+    ],
+    reviews: [
+      { name: 'Suresh Patel', rating: 5, text: 'Our group of 15 had an amazing Char Dham trip. TV kept everyone entertained. Excellent!' },
+      { name: 'Rekha Nainwal', rating: 4, text: 'Very comfortable seats. Driver was experienced and safe. Will book again.' },
+    ],
+  },
+  bus50: {
+    name: 'Luxury Coach 50-Seater',
+    sub: 'Large Groups · Pilgrimage · Corporate',
+    price: '₹18,000',
+    img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=85',
+    desc: 'Our flagship luxury coach for very large groups — pilgrimages, corporate events, school tours and weddings. Features 50 recliner seats, full AC, two flat-screen TVs, a PA sound system, onboard toilet and GPS tracking. A professional driver with a dedicated helper ensures a smooth and safe journey across Uttarakhand.',
+    feats: ['❄️ Full AC', '💺 50 Recliner Seats', '📺 2 Flat Screen TVs', '🎵 PA Sound System', '🚻 Onboard Toilet', '📡 GPS Tracked', '🛡️ Fully Insured', '🧑‍✈️ Driver + Helper'],
+    routes: [
+      { route: 'Haridwar → Char Dham Yatra', km: '500 km', price: '₹35,000' },
+      { route: 'Dehradun → Badrinath', km: '300 km', price: '₹25,000' },
+      { route: 'Delhi → Haridwar (One Way)', km: '220 km', price: '₹22,000' },
+      { route: 'Rishikesh → Kedarnath', km: '220 km', price: '₹24,000' },
+    ],
+    reviews: [
+      { name: 'Rajesh Tiwari', rating: 5, text: 'Took 45 people to Char Dham. Coach was pristine and driver was excellent. 10/10.' },
+      { name: 'Savita Pandey', rating: 4, text: 'Very organised. TV and AC worked throughout. Highly recommend for large groups.' },
+    ],
+  },
+};
+
+/* ──────────────────────────────────────────────────────────────
+   1.  FILTER VEHICLES (tabs)
+────────────────────────────────────────────────────────────── */
+function filterVehicles(tab, type) {
+  // Active tab update
+  document.querySelectorAll('#vehTabs .ftab').forEach(t => t.classList.remove('active'));
+  if (tab) tab.classList.add('active');
+
+  const cards = document.querySelectorAll('#vehGrid .veh-card');
+  let shown = 0;
+  cards.forEach(card => {
+    const match = type === 'All' || card.dataset.type === type;
+    card.style.display = match ? '' : 'none';
+    if (match) shown++;
+  });
+
+  const countEl = document.getElementById('vehCount');
+  if (countEl) countEl.textContent = shown + ' vehicle' + (shown !== 1 ? 's' : '');
+}
+
+/* ──────────────────────────────────────────────────────────────
+   2.  SORT VEHICLES
+────────────────────────────────────────────────────────────── */
+function sortVehicles(value) {
+  const grid = document.getElementById('vehGrid');
+  if (!grid) return;
+  const cards = Array.from(grid.querySelectorAll('.veh-card'));
+
+  cards.sort((a, b) => {
+    if (value === 'price-low')  return +a.dataset.price - +b.dataset.price;
+    if (value === 'price-high') return +b.dataset.price - +a.dataset.price;
+    if (value === 'rating')     return +b.dataset.rating - +a.dataset.rating;
+    return 0;
+  });
+
+  cards.forEach(c => grid.appendChild(c));
+}
+
+/* ──────────────────────────────────────────────────────────────
+   3.  VEHICLE SEARCH (book bar)
+────────────────────────────────────────────────────────────── */
+function vehicleSearch() {
+  const pickup = document.getElementById('vbbPickup')?.value.trim();
+  const drop   = document.getElementById('vbbDrop')?.value.trim();
+  const date   = document.getElementById('vbbDate')?.value;
+
+  if (!pickup) {
+    document.getElementById('vbbPickup')?.focus();
+    showToast('📍 Please enter a pickup location');
+    return;
+  }
+  if (!drop) {
+    document.getElementById('vbbDrop')?.focus();
+    showToast('📍 Please enter a drop location');
+    return;
+  }
+  if (!date) {
+    document.getElementById('vbbDate')?.focus();
+    showToast('📅 Please select a journey date');
+    return;
+  }
+
+  // Show all cards and scroll down
+  document.querySelectorAll('#vehGrid .veh-card').forEach(c => (c.style.display = ''));
+  document.getElementById('vehGrid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  showToast(`🔍 Showing vehicles for ${pickup} → ${drop}`);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   4.  OPEN VEHICLE DETAIL MODAL
+────────────────────────────────────────────────────────────── */
+function openVehicleDetail(id) {
+  const v = VEHICLES[id];
+  if (!v) return;
+
+  // Basic info
+  document.getElementById('vdImg').src        = v.img;
+  document.getElementById('vdImg').alt        = v.name;
+  document.getElementById('vdName').textContent = v.name;
+  document.getElementById('vdSub').textContent  = v.sub;
+  document.getElementById('vdPrice').innerHTML  = v.price + '<small>/day</small>';
+  document.getElementById('vdPriceBottom').innerHTML = v.price + '<small>/day</small>';
+  document.getElementById('vdDesc').textContent = v.desc;
+
+  // Features grid
+  document.getElementById('vdFeatList').innerHTML = v.feats
+    .map(f => `<div class="vd-feat-item">${f}</div>`).join('');
+
+  // Routes table
+  document.getElementById('vdRouteList').innerHTML = `
+    <table style="width:100%;border-collapse:collapse;font-size:.85rem">
+      <thead>
+        <tr style="background:var(--mist)">
+          <th style="padding:.6rem .8rem;text-align:left;color:var(--forest)">Route</th>
+          <th style="padding:.6rem .8rem;text-align:center;color:var(--forest)">Distance</th>
+          <th style="padding:.6rem .8rem;text-align:right;color:var(--forest)">Rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${v.routes.map((r, i) => `
+        <tr style="border-bottom:1px solid rgba(0,0,0,.06);background:${i % 2 === 0 ? 'transparent' : 'var(--mist)'}">
+          <td style="padding:.55rem .8rem;color:var(--stone)">${r.route}</td>
+          <td style="padding:.55rem .8rem;text-align:center;color:var(--stone)">${r.km}</td>
+          <td style="padding:.55rem .8rem;text-align:right;font-weight:700;color:var(--pine)">${r.price}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+
+  // Reviews
+  document.getElementById('vdRevList').innerHTML = v.reviews.map(r => `
+    <div style="border-bottom:1px solid rgba(0,0,0,.07);padding:.9rem 0">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem">
+        <span style="font-weight:700;font-size:.88rem;color:var(--forest)">${r.name}</span>
+        <span style="color:#f59e0b;font-size:.85rem">${'⭐'.repeat(r.rating)}</span>
+      </div>
+      <p style="font-size:.83rem;color:var(--stone);line-height:1.65;margin:0">${r.text}</p>
+    </div>`).join('');
+
+  // Reset tabs to Overview
+  switchVdTab(
+    document.querySelector('.vd-tab'),
+    'vdOverview'
+  );
+
+  // Show overlay
+  const ov = document.getElementById('vdOv');
+  if (ov) {
+    ov.style.display = 'flex';
+    requestAnimationFrame(() => ov.classList.add('active'));
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────
+   5.  CLOSE VEHICLE DETAIL MODAL
+────────────────────────────────────────────────────────────── */
+function closeVehicleDetail() {
+  const ov = document.getElementById('vdOv');
+  if (ov) {
+    ov.classList.remove('active');
+    setTimeout(() => { ov.style.display = 'none'; }, 280);
+    document.body.style.overflow = '';
+  }
+}
+
+/* Close on backdrop click */
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('vdOv')?.addEventListener('click', function (e) {
+    if (e.target === this) closeVehicleDetail();
+  });
+});
+
+/* ──────────────────────────────────────────────────────────────
+   6.  SWITCH TABS IN VEHICLE DETAIL MODAL
+────────────────────────────────────────────────────────────── */
+function switchVdTab(btn, panelId) {
+  document.querySelectorAll('.vd-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.vd-panel').forEach(p => p.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const panel = document.getElementById(panelId);
+  if (panel) panel.classList.add('active');
+}
+
+/* ──────────────────────────────────────────────────────────────
+   7.  OPEN BOOKING MODAL
+────────────────────────────────────────────────────────────── */
+function openBooking(vehicleName) {
+  closeVehicleDetail();
+  const name  = vehicleName || 'Selected Vehicle';
+  const vKey  = Object.keys(VEHICLES).find(k => VEHICLES[k].name === name);
+  const price = vKey ? VEHICLES[vKey].price.replace('₹', '').replace(',', '') : '';
+
+  const ov = document.getElementById('bookOv');
+  if (!ov) return;
+
+  document.getElementById('bookTitle').textContent    = 'Book Your Vehicle';
+  document.getElementById('bookPkgName').textContent  = name;
+  document.getElementById('bookPkgName2').textContent = name;
+  document.getElementById('bookPkgPrice').textContent = price ? '₹' + (+price).toLocaleString('en-IN') + '/day' : '—';
+
+  // Reset form fields
+  ['bookName', 'bookPhone', 'bookDate', 'bookMsg'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  const personsEl = document.getElementById('bookPersons');
+  if (personsEl) personsEl.value = '1';
+
+  updateBookSummary(price, 1);
+
+  ov.style.display = 'flex';
+  requestAnimationFrame(() => ov.classList.add('active'));
+  document.body.style.overflow = 'hidden';
+}
+
+/* Close booking on backdrop click */
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('bookOv')?.addEventListener('click', function (e) {
+    if (e.target === this) closeBooking();
+  });
+});
+
+/* ──────────────────────────────────────────────────────────────
+   8.  CONFIRM BOOKING
+────────────────────────────────────────────────────────────── */
+function confirmBooking() {
+  const name  = document.getElementById('bookName')?.value.trim();
+  const phone = document.getElementById('bookPhone')?.value.trim();
+  const date  = document.getElementById('bookDate')?.value;
+
+  if (!name)  { document.getElementById('bookName')?.focus();  showToast('👤 Please enter your name'); return; }
+  if (!phone) { document.getElementById('bookPhone')?.focus(); showToast('📞 Please enter your mobile number'); return; }
+  if (!date)  { document.getElementById('bookDate')?.focus();  showToast('📅 Please select a travel date'); return; }
+
+  const btn = document.getElementById('bookConfirmBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '⏳ Confirming…';
+  }
+
+  setTimeout(() => {
+    closeBooking();
+    showToast('🎉 Booking Confirmed! We will call you shortly.');
+    if (btn) { btn.disabled = false; btn.textContent = '✅ Confirm Booking →'; }
+  }, 1200);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   CSS — vd-ov active state (agar style.css mein nahi hai)
+   Yeh block sirf tab kaam karega jab vd-ov display:none ho
+   by default. Adjust karo apni style.css ke hisaab se.
+────────────────────────────────────────────────────────────── */
+(function injectVdStyles() {
+  if (document.getElementById('_vdStyles')) return;
+  const s = document.createElement('style');
+  s.id = '_vdStyles';
+  s.textContent = `
+    #vdOv { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55);
+            z-index:9000; align-items:center; justify-content:center;
+            opacity:0; transition:opacity .28s ease; }
+    #vdOv.active { opacity:1; }
+    .vd-feat-item { background:var(--mist,#f4f6f0); border-radius:8px;
+                    padding:.5rem .8rem; font-size:.82rem; color:var(--forest,#1a3d2b);
+                    font-weight:600; }
+    .vd-feat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+                    gap:.5rem; }
+    .vd-panel { display:none; }
+    .vd-panel.active { display:block; }
+    #bookOv { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55);
+              z-index:9100; align-items:center; justify-content:center;
+              opacity:0; transition:opacity .28s ease; }
+    #bookOv.active { opacity:1; }
+  `;
+  document.head.appendChild(s);
+})();
