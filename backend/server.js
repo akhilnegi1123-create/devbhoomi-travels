@@ -478,6 +478,7 @@ app.get("*", (req, res) => {
 
 // ── START ──
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 DevBhoomi Backend: http://localhost:${PORT}`);
   console.log(`✅ Health: http://localhost:${PORT}/api/health`);
