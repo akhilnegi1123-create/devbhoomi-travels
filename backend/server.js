@@ -20,7 +20,7 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => { console.log('✅ MongoDB Connected!'); seedAdmin(); })
   .catch(err => console.error('❌ MongoDB Error:', err));
 
-  passport.use(new googleStrategy({
+  passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
   callbackURL: "/auth/google/callback"
@@ -41,6 +41,8 @@ app.get("/auth/google/callback",
   passport.authenticate("google", { session: false }),
   (req, res) => {
     res.redirect("/");
+  }
+);
 
 // ✅ STATIC LAST
 app.use(express.static(path.join(__dirname, "../")));
@@ -478,7 +480,6 @@ app.get("*", (req, res) => {
 
 // ── START ──
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 DevBhoomi Backend: http://localhost:${PORT}`);
   console.log(`✅ Health: http://localhost:${PORT}/api/health`);
